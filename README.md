@@ -557,6 +557,41 @@ Feel free to submit issues, feature requests, or pull requests to improve the ap
   - Fixed an issue where sending a message could accidentally open the screen sharing dialog due to a broad selector.
   - Enhanced the message sending logic to only interact with the correct chat input box.
 
+## Configuration (config.py)
+- The app loads its configuration from `Truely.app/Contents/Resources/config.py` **inside the .app bundle**.
+- To change settings (Zoom URL, monitored apps, etc.), edit this file directly after building.
+- No rebuild is needed after editing `config.py` inside the `.app`.
+- If you want to change the default config before building, edit `config.py` in your project root.
+
+## How to Build
+1. (Optional) Edit `config.py` in your project root to set default values.
+2. Build the app with:
+   ```bash
+   pyinstaller truely.spec
+   ```
+3. The app bundle will be created in `dist/Truely.app` (or `distribution/Truely.app`).
+
+## How to Run
+- Double-click `Truely.app` in Finder, or run from terminal:
+  ```bash
+  ./dist/Truely.app/Contents/MacOS/Truely
+  ```
+
+## Troubleshooting
+- If you get a segmentation fault, try running from the terminal to see error output.
+- Make sure your Python and PyQt6 versions are compatible with your macOS version.
+- If you edit `config.py` inside the `.app` and changes don't take effect, ensure you are editing the correct file: `Truely.app/Contents/Resources/config.py`.
+
+## Recommended Repo Structure
+- `truely_dual_join.py` — Main application code
+- `config.py` — Default config (copied into the app bundle)
+- `truely.spec` — PyInstaller build spec
+- `requirements.txt` — Python dependencies
+- `hook-disable-location.py` — Disables problematic Qt location services
+- `README.md` — This documentation
+
+Other files (tests, old builds, logs) can be moved to an `archive/` folder if not needed for daily use.
+
 ---
 
 **Version**: 2.2  
