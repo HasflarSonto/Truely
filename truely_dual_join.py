@@ -10,6 +10,7 @@ import time
 import webbrowser
 import urllib.parse
 import subprocess
+import atexit
 from datetime import datetime
 from typing import List
 from PyQt6.QtWidgets import (
@@ -582,6 +583,151 @@ class BotMeetingJoiner:
         except Exception as e:
             print(f"Error scrolling element into view: {e}")
 
+    def send_goodbye_message(self):
+        """Send a goodbye message before leaving the meeting"""
+        try:
+            if self.driver and self.is_joined:
+                goodbye_message = "Goodbye everyone! Truely signing off."
+                success = self.send_message_to_chat(goodbye_message)
+                if success:
+                    print("Sent goodbye message")
+                    # Wait a moment for the message to be sent
+                    time.sleep(1)
+                else:
+                    print("Failed to send goodbye message")
+        except Exception as e:
+            print(f"Error sending goodbye message: {e}")
+
+    def leave_meeting(self):
+        """Leave the current meeting"""
+        if not self.driver:
+            return
+            
+        try:
+            # Send goodbye message first
+            self.send_goodbye_message()
+            
+            # First try to switch to meeting iframe if it exists
+            self.switch_to_meeting_iframe()
+            
+            # Try multiple strategies to find and click leave button
+            wait = WebDriverWait(self.driver, 5)
+            leave_success = False
+            
+            # Strategy 1: Try the exact HTML structure provided
+            leave_selectors = [
+                "//button[@aria-label='Leave']",
+                "//button[contains(@class, 'footer-button-base__button') and @aria-label='Leave']",
+                "//button[.//span[contains(@class, 'footer-button-base__button-label') and text()='Leave']]",
+                "//button[.//svg[contains(@class, 'SvgLeave')]]",
+                "//button[contains(@class, 'footer-button__button') and @aria-label='Leave']",
+                # Fallback selectors
+                "//button[contains(@aria-label, 'Leave')]",
+                "//button[contains(@title, 'Leave')]",
+                "//button[contains(text(), 'Leave')]",
+                "//button[contains(@class, 'leave')]",
+                "//button[contains(@class, 'Leave')]",
+                "//button[@aria-label='Leave meeting']",
+                "//button[@title='Leave meeting']",
+                "//button[contains(@aria-label, 'End')]",
+                "//button[contains(@title, 'End')]",
+                "//button[contains(text(), 'End')]"
+            ]
+            
+            for selector in leave_selectors:
+                try:
+                    leave_button = wait.until(EC.element_to_be_clickable((By.XPATH, selector)))
+                    print(f"Found leave button with selector: {selector}")
+                    
+                    # Click twice with delay: first to highlight, second to leave
+                    try:
+                        print("Clicking leave button first time (to highlight)...")
+                        leave_button.click()
+                        time.sleep(0.5)  # Wait for highlight
+                        
+                        print("Clicking leave button second time (to leave)...")
+                        leave_button.click()
+                        print("Double-clicked leave button successfully")
+                        leave_success = True
+                        break
+                        
+                    except Exception as click_error:
+                        print(f"Double-click failed: {click_error}")
+                        # Fallback to JavaScript click
+                        try:
+                            print("Trying JavaScript double-click...")
+                            self.driver.execute_script("arguments[0].click();", leave_button)
+                            time.sleep(0.5)
+                            self.driver.execute_script("arguments[0].click();", leave_button)
+                            print("JavaScript double-click successful")
+                            leave_success = True
+                            break
+                        except Exception as js_error:
+                            print(f"JavaScript double-click failed: {js_error}")
+                            continue
+                        
+                except Exception as e:
+                    print(f"Selector {selector} failed: {e}")
+                    continue
+            
+            # Strategy 2: If no leave button found, try JavaScript to find it
+            if not leave_success:
+                try:
+                    print("Trying JavaScript to find leave button...")
+                    leave_button = self.driver.execute_script("""
+                        return document.querySelector('button[aria-label="Leave"], button[aria-label*="Leave"], button[title*="Leave"], button[aria-label*="End"], button[title*="End"]');
+                    """)
+                    if leave_button:
+                        self.driver.execute_script("arguments[0].click();", leave_button)
+                        print("Clicked leave button with JavaScript")
+                        leave_success = True
+                except Exception as e:
+                    print(f"JavaScript leave button search failed: {e}")
+            
+            # Strategy 3: Try to find any button with "leave" or "end" in its text
+            if not leave_success:
+                try:
+                    print("Trying to find any leave/end button...")
+                    buttons = self.driver.find_elements(By.TAG_NAME, "button")
+                    for button in buttons:
+                        try:
+                            text = button.text.lower()
+                            aria_label = button.get_attribute('aria-label', '').lower()
+                            title = button.get_attribute('title', '').lower()
+                            
+                            if 'leave' in text or 'leave' in aria_label or 'leave' in title or 'end' in text or 'end' in aria_label or 'end' in title:
+                                print(f"Found potential leave button: {button.text} (aria-label: {aria_label}, title: {title})")
+                                button.click()
+                                print("Clicked potential leave button")
+                                leave_success = True
+                                break
+                        except:
+                            continue
+                except Exception as e:
+                    print(f"Button search failed: {e}")
+            
+            # Handle confirmation dialog if leave button was clicked
+            if leave_success:
+                try:
+                    print("Looking for confirmation dialog...")
+                    # Add a small delay to let the confirmation dialog appear
+                    time.sleep(1)
+                    confirm_button = wait.until(EC.element_to_be_clickable((
+                        By.XPATH, "//button[contains(text(), 'Leave') or contains(text(), 'End') or contains(text(), 'Yes') or contains(text(), 'OK')]"
+                    )))
+                    confirm_button.click()
+                    print("Confirmed leave meeting")
+                except Exception as e:
+                    print(f"No confirmation dialog found or failed to confirm: {e}")
+            
+            self.is_joined = False
+            print("Left the meeting")
+            
+        except Exception as e:
+            print(f"Error leaving meeting: {e}")
+            # Even if leaving fails, mark as not joined
+            self.is_joined = False
+
     def close_driver(self):
         """Close the browser driver"""
         with self._driver_lock:
@@ -640,6 +786,9 @@ class ProcessMonitorApp(QMainWindow):
         self.chat_opened = False
         self.last_cluely_alert_time = 0
         self.alert_cooldown = 30  # seconds between alerts
+        
+        # Register cleanup function for atexit
+        atexit.register(self.cleanup_on_exit)
         
         self.init_ui()
         self.init_tray_icon()
@@ -778,6 +927,38 @@ class ProcessMonitorApp(QMainWindow):
         else:
             self.log_message("Failed to send introduction message.")
 
+    def clean_process_info_for_chat(self, process_info: str) -> str:
+        """Strip HTML tags and create clean text for chat alerts"""
+        import re
+        
+        # Remove HTML tags
+        clean_text = re.sub(r'<[^>]+>', '', process_info)
+        
+        # Clean up any remaining formatting
+        clean_text = clean_text.replace('&nbsp;', ' ')
+        clean_text = clean_text.replace('&amp;', '&')
+        clean_text = clean_text.replace('&lt;', '<')
+        clean_text = clean_text.replace('&gt;', '>')
+        
+        # Remove extra whitespace and normalize
+        clean_text = ' '.join(clean_text.split())
+        
+        # Extract the key information in a clean format
+        # Look for patterns like [NAME] cluely (PID: 49311)
+        name_match = re.search(r'\[NAME\]\s+(\w+)\s+\(PID:\s+(\d+)\)', clean_text)
+        path_match = re.search(r'\[PATH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
+        hash_match = re.search(r'\[HASH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
+        
+        if name_match:
+            return f"[NAME] {name_match.group(1)} (PID: {name_match.group(2)})"
+        elif path_match:
+            return f"[PATH] {path_match.group(1)} (PID: {path_match.group(2)})"
+        elif hash_match:
+            return f"[HASH] {hash_match.group(1)} (PID: {hash_match.group(2)})"
+        else:
+            # Fallback to cleaned text
+            return clean_text
+
     def send_automated_alert(self, process_info: str):
         """Send suspicious activity alert to the meeting chat"""
         try:
@@ -789,13 +970,20 @@ class ProcessMonitorApp(QMainWindow):
             if current_time - self.last_cluely_alert_time < self.alert_cooldown:
                 return
                 
+            # Clean the process info for chat (remove HTML tags)
+            clean_process_info = self.clean_process_info_for_chat(process_info)
+            
             # Create alert message
             timestamp = datetime.now().strftime("%H:%M:%S")
             alert_message = (
                 f"ALERT: SUSPICIOUS ACTIVITY DETECTED [{timestamp}]\n"
-                f"{process_info}\n\n"
+                f"{clean_process_info}\n\n"
                 "This process has been flagged as potentially suspicious by Truely monitoring system."
             )
+            
+            # Debug: Print what we're about to send
+            print(f"DEBUG: Sending alert message: {alert_message}")
+            
             # Send message
             success = self.bot_joiner.send_message_to_chat(alert_message)
             if success:
@@ -956,15 +1144,30 @@ class ProcessMonitorApp(QMainWindow):
         self.alert_message.setWordWrap(True)
         layout.addWidget(self.alert_message)
         
-        # Close button
-        close_btn = QPushButton("Dismiss Alert")
+        # Close button - now sends SIGINT for graceful shutdown
+        close_btn = QPushButton("Dismiss Alert & Shutdown")
         close_btn.setStyleSheet("padding: 8px 16px; font-size: 12px; background: #cc0000; color: white; border: none; border-radius: 4px;")
-        close_btn.clicked.connect(self.hide_alert_window)
+        close_btn.clicked.connect(self.shutdown_from_popup)
         layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         
         # Position window
         screen = QApplication.primaryScreen().geometry()
         self.alert_window.setGeometry(screen.width() - 400, 50, 380, 150)
+
+    def shutdown_from_popup(self):
+        """Handle shutdown from popup button - triggers graceful shutdown directly"""
+        try:
+            print("Shutdown requested from popup - starting graceful shutdown...")
+            # Call cleanup directly instead of sending signal
+            self.cleanup_on_exit()
+            print("Cleanup completed, quitting application...")
+            QApplication.quit()
+        except Exception as e:
+            print(f"Error during popup shutdown: {e}")
+            import traceback
+            traceback.print_exc()
+            # Force quit if cleanup fails
+            QApplication.quit()
 
     def pulse_alert(self):
         """Pulse the alert window to draw attention"""
@@ -1079,25 +1282,88 @@ class ProcessMonitorApp(QMainWindow):
     def closeEvent(self, event):
         """Handle application close event"""
         try:
+            self.log_message("Shutting down Truely...")
+            
             # Stop worker thread
             if self.worker and self.worker.isRunning():
                 self.worker.stop()
                 self.worker.wait()
             
+            # Leave the Zoom meeting if bot is joined
+            if self.bot_joiner and self.bot_joiner.is_joined:
+                self.log_message("Leaving Zoom meeting...")
+                try:
+                    # Try to leave the meeting gracefully
+                    if self.bot_joiner.driver:
+                        self.bot_joiner.leave_meeting()
+                except Exception as e:
+                    self.log_message(f"Error leaving meeting: {e}")
+            
             # Close bot driver
-            if self.bot_joiner:
-                self.bot_joiner.close_driver()
+            if hasattr(self, 'bot_joiner') and self.bot_joiner:
+                print("Closing Selenium browser...")
+                try:
+                    # DISABLED FOR DEVELOPMENT - Keep browser open
+                    # self.bot_joiner.close_driver()
+                    print("Selenium browser kept open for development")
+                except Exception as e:
+                    print(f"Error closing Selenium browser: {e}")
+            else:
+                print("Bot joiner not available for cleanup")
             
             # Hide tray icon
             if hasattr(self, 'tray_icon'):
                 self.tray_icon.hide()
             
+            self.log_message("Truely shutdown complete")
             event.accept()
         except Exception as e:
-            print(f"Error during shutdown: {e}")
+            self.log_message(f"Error during shutdown: {e}")
             event.accept()
 
+    def cleanup_on_exit(self):
+        """Cleanup function called by atexit"""
+        try:
+            print("=== CLEANUP ON EXIT STARTED ===")
+            
+            # Leave the Zoom meeting if bot is joined
+            if hasattr(self, 'bot_joiner') and self.bot_joiner and self.bot_joiner.is_joined:
+                print("Bot is joined to meeting, attempting to leave...")
+                try:
+                    if self.bot_joiner.driver:
+                        print("Driver exists, calling leave_meeting...")
+                        self.bot_joiner.leave_meeting()
+                        print("Leave meeting call completed")
+                    else:
+                        print("Driver does not exist")
+                except Exception as e:
+                    print(f"Error leaving meeting: {e}")
+            else:
+                print("Bot is not joined to meeting or bot_joiner not available")
+            
+            # Close bot driver
+            if hasattr(self, 'bot_joiner') and self.bot_joiner:
+                print("Closing Selenium browser...")
+                try:
+                    # DISABLED FOR DEVELOPMENT - Keep browser open
+                    # self.bot_joiner.close_driver()
+                    print("Selenium browser kept open for development")
+                except Exception as e:
+                    print(f"Error closing Selenium browser: {e}")
+            else:
+                print("Bot joiner not available for cleanup")
+                
+            print("=== CLEANUP ON EXIT COMPLETED ===")
+                
+        except Exception as e:
+            print(f"Error during atexit cleanup: {e}")
+            import traceback
+            traceback.print_exc()
+
 def main():
+    # Global reference to the window for cleanup
+    global app_window
+    
     # Watchdog timer (optional, e.g. 2 hours)
     def watchdog():
         print("Watchdog timer expired - shutting down")
@@ -1105,6 +1371,13 @@ def main():
     
     def handle_exit(signum, frame):
         print("Received signal, shutting down gracefully...")
+        try:
+            # Call cleanup on the window instance if it exists
+            if 'app_window' in globals() and app_window:
+                print("Calling cleanup on window instance...")
+                app_window.cleanup_on_exit()
+        except Exception as e:
+            print(f"Error during signal cleanup: {e}")
         os._exit(0)
     
     # Set up signal handlers
@@ -1117,8 +1390,11 @@ def main():
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)  # Keep running when window is closed
     
-    window = ProcessMonitorApp()
-    window.show()
+    app_window = ProcessMonitorApp()
+    app_window.show()
+    
+    # Register cleanup for the window instance
+    atexit.register(app_window.cleanup_on_exit)
     
     sys.exit(app.exec())
 
