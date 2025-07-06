@@ -1350,15 +1350,6 @@ class ProcessMonitorApp(QMainWindow):
                 self.auto_meeting_active = True
                 self.update_automated_status()
                 self.log_message("Successfully joined meeting as bot!")
-                # Also join the actual user to the same meeting
-                self.log_message("Joining actual user to the same meeting...")
-                user_success = self.meeting_joiner.join_zoom_meeting(meeting_id, passcode)
-                if user_success:
-                    self.log_message("Successfully opened Zoom app for user to join!")
-                    self.add_to_recent_meetings(f"Zoom: {meeting_id}")
-                else:
-                    self.log_message("Failed to open Zoom app for user.")
-                
                 
                 # Wait a bit for meeting to load, then open chat (reduced delay)
                 QTimer.singleShot(2000, self.open_automated_chat)  # Reduced from 5000 to 2000

@@ -55,6 +55,15 @@ A modern, real-time GUI application for monitoring and detecting suspicious proc
 
 **Note**: Selenium and webdriver-manager will be automatically installed on first run if not already present.
 
+### 🎯 Startup Behavior
+When you launch the application, it will:
+1. **Prompt for Zoom meeting link** - Enter any Zoom meeting URL or ID
+2. **Join as bot** - The application automatically joins the meeting as "Truely Bot" using browser automation
+3. **Join as user** - Simultaneously opens the Zoom app for you to join the same meeting manually
+4. **Set up monitoring** - The bot will monitor for suspicious processes and send alerts to the meeting chat
+
+This dual-join functionality ensures both the automated bot and the actual user are present in the same meeting for comprehensive monitoring.
+
 ## 📖 Usage Guide
 
 ### Process Monitoring
