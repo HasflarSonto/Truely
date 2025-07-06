@@ -23,6 +23,7 @@ import hashlib
 import logging
 import signal
 import threading
+import platform
 
 # Import config
 try:
@@ -739,7 +740,7 @@ class BotMeetingJoiner:
             self.is_joined = False
 
     def close_driver(self):
-        """Close the browser driver"""
+        """Close the browser driver and ensure all ChromeDriver processes are killed (failsafe)"""
         with self._driver_lock:
             if self.driver:
                 try:
@@ -756,6 +757,13 @@ class BotMeetingJoiner:
                 except Exception as e:
                     logging.warning('Failed to kill child PID %s: %s', pid, e)
             self._child_pids.clear()
+            # Failsafe: kill any remaining chromedriver processes (system-wide, only on macOS/Linux)
+            if platform.system() in ("Darwin", "Linux"):
+                try:
+                    subprocess.run(["pkill", "-f", "chromedriver"], check=False)
+                    logging.info('Failsafe: pkill -f chromedriver run to clean up any orphaned processes')
+                except Exception as e:
+                    logging.warning('Failsafe pkill failed: %s', e)
 
 class BotSendMessageThread(QThread):
     """Thread for sending messages as a bot"""
@@ -1505,9 +1513,8 @@ class ProcessMonitorApp(QMainWindow):
             if hasattr(self, 'bot_joiner') and self.bot_joiner:
                 print("Closing Selenium browser...")
                 try:
-                    # DISABLED FOR DEVELOPMENT - Keep browser open
-                    # self.bot_joiner.close_driver()
-                    print("Selenium browser kept open for development")
+                    self.bot_joiner.close_driver()
+                    print("Selenium browser closed")
                 except Exception as e:
                     print(f"Error closing Selenium browser: {e}")
             else:
