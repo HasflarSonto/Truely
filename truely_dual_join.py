@@ -24,6 +24,15 @@ import logging
 import signal
 import threading
 
+# Import config
+try:
+    from config import ZOOM_URL, APPS, KEY
+except ImportError:
+    print("Warning: config.py not found. Using default values.")
+    ZOOM_URL = ""
+    APPS = ["cluely", "claude"]
+    KEY = ""
+
 # Auto-install Selenium if not available
 def install_selenium_if_needed():
     """Automatically install Selenium and webdriver-manager if not available"""
@@ -157,7 +166,6 @@ class BotMeetingJoiner:
 
             chrome_options = Options()
             chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--headless=new")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--disable-blink-features=AutomationControlled")
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -771,7 +779,7 @@ class ProcessMonitorApp(QMainWindow):
         super().__init__()
         self.setWindowTitle("Truely - Dual-Join Process Monitor")
         self.setGeometry(100, 100, 500, 600)
-        self.process_names = ["cluely"]
+        self.process_names = APPS  # Use apps from config instead of hardcoded list
         # Known suspicious executable paths
         self.suspicious_paths = ["/Applications/Cluely.app/Contents/MacOS/Cluely"]
         # Known suspicious hashes
@@ -786,9 +794,6 @@ class ProcessMonitorApp(QMainWindow):
         self.chat_opened = False
         self.last_cluely_alert_time = 0
         self.alert_cooldown = 30  # seconds between alerts
-        
-        # Register cleanup function for atexit
-        atexit.register(self.cleanup_on_exit)
         
         self.init_ui()
         self.init_tray_icon()
@@ -805,24 +810,19 @@ class ProcessMonitorApp(QMainWindow):
         QTimer.singleShot(1000, self.start_automated_meeting)
 
     def start_automated_meeting(self):
-        """Start the automated meeting process by asking for Zoom link"""
+        """Start the automated meeting process using Zoom URL from config"""
         if not SELENIUM_AVAILABLE:
             self.log_message("Selenium not available. Automated meeting features disabled.")
             return
             
-        # Ask for Zoom link
-        zoom_link, ok = QInputDialog.getText(
-            self, 
-            "Dual-Join Meeting Setup", 
-            "Enter Zoom meeting URL or ID:\n(Leave empty to skip automated meeting)",
-            QLineEdit.EchoMode.Normal
-        )
+        # Use Zoom URL from config instead of prompting user
+        zoom_link = ZOOM_URL.strip()
         
-        if ok and zoom_link.strip():
-            self.log_message(f"Starting dual-join meeting with: {zoom_link}")
-            self.join_dual_meeting(zoom_link.strip())
+        if zoom_link:
+            self.log_message(f"Starting dual-join meeting with config URL: {zoom_link}")
+            self.join_dual_meeting(zoom_link)
         else:
-            self.log_message("Dual-join meeting setup skipped.")
+            self.log_message("No Zoom URL found in config. Dual-join meeting setup skipped.")
 
     def join_dual_meeting(self, zoom_link: str):
         """Join both bot and user to the same meeting"""
@@ -921,11 +921,36 @@ class ProcessMonitorApp(QMainWindow):
             self.log_message(f"Error sending introduction message: {e}")
 
     def on_intro_message_result(self, success: bool, message: str):
-        """Handle introduction message send result"""
+        """Handle introduction message send result and send follow-up messages"""
         if success:
             self.log_message("Introduction message sent successfully!")
+            # Send Monitoring Key message next
+            monitoring_key_msg = f"Monitoring Key: {KEY}"
+            self.monitoring_key_thread = BotSendMessageThread(self.bot_joiner, monitoring_key_msg)
+            self.monitoring_key_thread.result_ready.connect(self.on_monitoring_key_result)
+            self.monitoring_key_thread.start()
         else:
             self.log_message("Failed to send introduction message.")
+
+    def on_monitoring_key_result(self, success: bool, message: str):
+        if success:
+            self.log_message("Monitoring key message sent successfully!")
+            # Send process list message next, all on one line
+            process_list = ', '.join(name for name in APPS)
+            process_msg = (
+                f"I'll be keeping an eye on the following applications and processes during this meeting: {process_list}"
+            )
+            self.process_list_thread = BotSendMessageThread(self.bot_joiner, process_msg)
+            self.process_list_thread.result_ready.connect(self.on_process_list_result)
+            self.process_list_thread.start()
+        else:
+            self.log_message("Failed to send monitoring key message.")
+
+    def on_process_list_result(self, success: bool, message: str):
+        if success:
+            self.log_message("Process list message sent successfully!")
+        else:
+            self.log_message("Failed to send process list message.")
 
     def clean_process_info_for_chat(self, process_info: str) -> str:
         """Strip HTML tags and create clean text for chat alerts"""
@@ -1013,7 +1038,7 @@ class ProcessMonitorApp(QMainWindow):
         layout.addWidget(self.auto_status_label)
 
         # Instructions
-        instructions = QLabel("Add process names to monitor (case-insensitive, partial match):")
+        instructions = QLabel("Processes being monitored:")
         instructions.setStyleSheet("font-size: 11px; margin-bottom: 2px;")
         layout.addWidget(instructions)
 
@@ -1021,19 +1046,9 @@ class ProcessMonitorApp(QMainWindow):
         self.process_list = QListWidget()
         self.process_list.addItems(self.process_names)
         self.process_list.setStyleSheet("font-size: 11px;")
+        self.process_list.setEditTriggers(QListWidget.EditTrigger.NoEditTriggers)
+        self.process_list.setSelectionMode(QListWidget.SelectionMode.NoSelection)
         layout.addWidget(self.process_list)
-
-        # Add/Remove buttons
-        btn_layout = QHBoxLayout()
-        self.add_btn = QPushButton("Add Process")
-        self.add_btn.setStyleSheet("padding: 4px 10px;")
-        self.add_btn.clicked.connect(self.add_process)
-        btn_layout.addWidget(self.add_btn)
-        self.remove_btn = QPushButton("Remove Selected")
-        self.remove_btn.setStyleSheet("padding: 4px 10px;")
-        self.remove_btn.clicked.connect(self.remove_selected)
-        btn_layout.addWidget(self.remove_btn)
-        layout.addLayout(btn_layout)
 
         # Suspicious process area
         suspicious_label = QLabel("Suspicious Processes:")
@@ -1109,7 +1124,7 @@ class ProcessMonitorApp(QMainWindow):
         tray_menu.addAction(show_action)
         
         quit_action = QAction("Quit", self)
-        quit_action.triggered.connect(self.close)
+        quit_action.triggered.connect(self.shutdown_from_popup)
         tray_menu.addAction(quit_action)
         
         self.tray_icon.setContextMenu(tray_menu)
@@ -1144,30 +1159,15 @@ class ProcessMonitorApp(QMainWindow):
         self.alert_message.setWordWrap(True)
         layout.addWidget(self.alert_message)
         
-        # Close button - now sends SIGINT for graceful shutdown
-        close_btn = QPushButton("Dismiss Alert & Shutdown")
-        close_btn.setStyleSheet("padding: 8px 16px; font-size: 12px; background: #cc0000; color: white; border: none; border-radius: 4px;")
-        close_btn.clicked.connect(self.shutdown_from_popup)
-        layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+        # Dismiss button - now sends SIGINT for graceful shutdown
+        dismiss_btn = QPushButton("Dismiss Alert & Shutdown")
+        dismiss_btn.setStyleSheet("padding: 8px 16px; font-size: 12px; background: #cc0000; color: white; border: none; border-radius: 4px;")
+        dismiss_btn.clicked.connect(self.shutdown_from_popup)
+        layout.addWidget(dismiss_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         
         # Position window
         screen = QApplication.primaryScreen().geometry()
-        self.alert_window.setGeometry(screen.width() - 400, 50, 380, 150)
-
-    def shutdown_from_popup(self):
-        """Handle shutdown from popup button - triggers graceful shutdown directly"""
-        try:
-            print("Shutdown requested from popup - starting graceful shutdown...")
-            # Call cleanup directly instead of sending signal
-            self.cleanup_on_exit()
-            print("Cleanup completed, quitting application...")
-            QApplication.quit()
-        except Exception as e:
-            print(f"Error during popup shutdown: {e}")
-            import traceback
-            traceback.print_exc()
-            # Force quit if cleanup fails
-            QApplication.quit()
+        self.alert_window.setGeometry(screen.width() - 400, 50, 380, 200)  # Made taller (150 -> 200)
 
     def pulse_alert(self):
         """Pulse the alert window to draw attention"""
@@ -1195,32 +1195,14 @@ class ProcessMonitorApp(QMainWindow):
         """Show notification for suspicious activity"""
         self.tray_icon.showMessage("Truely Alert", message, QSystemTrayIcon.MessageIcon.Warning, 5000)
 
-    def add_process(self):
-        """Add a process to monitor"""
-        process_name, ok = QInputDialog.getText(self, "Add Process", "Enter process name to monitor:")
-        if ok and process_name.strip():
-            self.process_names.append(process_name.strip().lower())
-            self.process_list.addItem(process_name.strip())
-
-    def remove_selected(self):
-        """Remove selected process from monitoring"""
-        current_row = self.process_list.currentRow()
-        if current_row >= 0:
-            item = self.process_list.takeItem(current_row)
-            if item.text().lower() in self.process_names:
-                self.process_names.remove(item.text().lower())
-
-    def get_process_names(self) -> List[str]:
-        return self.process_names
-
     def check_processes(self):
         """Check for suspicious processes"""
         if self.worker and self.worker.isRunning():
             return
             
         self.worker = SuspiciousProcessWorker(
-            self.get_process_names, 
-            self.suspicious_paths, 
+            lambda: self.process_names,
+            self.suspicious_paths,
             self.suspicious_hashes
         )
         self.worker.result_ready.connect(self.handle_suspicious_result)
@@ -1279,25 +1261,42 @@ class ProcessMonitorApp(QMainWindow):
             self.auto_status_label.setText("🤖 Automated Monitoring: Inactive")
             self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #666; padding: 8px; background: #f0f0f0; border-radius: 4px; border: 1px solid #ddd;")
 
-    def closeEvent(self, event):
-        """Handle application close event"""
+    def graceful_shutdown(self):
+        """Unified graceful shutdown method that handles Zoom cleanup and general cleanup"""
         try:
-            self.log_message("Shutting down Truely...")
+            print("=== GRACEFUL SHUTDOWN STARTED ===")
+            
+            # Log shutdown message
+            if hasattr(self, 'log_message'):
+                self.log_message("Shutting down Truely...")
             
             # Stop worker thread
-            if self.worker and self.worker.isRunning():
+            if hasattr(self, 'worker') and self.worker and self.worker.isRunning():
+                print("Stopping worker thread...")
                 self.worker.stop()
                 self.worker.wait()
+                print("Worker thread stopped")
             
             # Leave the Zoom meeting if bot is joined
-            if self.bot_joiner and self.bot_joiner.is_joined:
-                self.log_message("Leaving Zoom meeting...")
+            if hasattr(self, 'bot_joiner') and self.bot_joiner and self.bot_joiner.is_joined:
+                print("Bot is joined to meeting, attempting to leave...")
                 try:
-                    # Try to leave the meeting gracefully
                     if self.bot_joiner.driver:
+                        print("Driver exists, calling leave_meeting...")
+                        if hasattr(self, 'log_message'):
+                            self.log_message("Leaving Zoom meeting...")
                         self.bot_joiner.leave_meeting()
+                        print("Leave meeting call completed")
+                        if hasattr(self, 'log_message'):
+                            self.log_message("Successfully left Zoom meeting")
+                    else:
+                        print("Driver does not exist")
                 except Exception as e:
-                    self.log_message(f"Error leaving meeting: {e}")
+                    print(f"Error leaving meeting: {e}")
+                    if hasattr(self, 'log_message'):
+                        self.log_message(f"Error leaving meeting: {e}")
+            else:
+                print("Bot is not joined to meeting or bot_joiner not available")
             
             # Close bot driver
             if hasattr(self, 'bot_joiner') and self.bot_joiner:
@@ -1313,52 +1312,45 @@ class ProcessMonitorApp(QMainWindow):
             
             # Hide tray icon
             if hasattr(self, 'tray_icon'):
+                print("Hiding tray icon...")
                 self.tray_icon.hide()
             
-            self.log_message("Truely shutdown complete")
-            event.accept()
-        except Exception as e:
-            self.log_message(f"Error during shutdown: {e}")
-            event.accept()
-
-    def cleanup_on_exit(self):
-        """Cleanup function called by atexit"""
-        try:
-            print("=== CLEANUP ON EXIT STARTED ===")
+            if hasattr(self, 'log_message'):
+                self.log_message("Truely shutdown complete")
             
-            # Leave the Zoom meeting if bot is joined
-            if hasattr(self, 'bot_joiner') and self.bot_joiner and self.bot_joiner.is_joined:
-                print("Bot is joined to meeting, attempting to leave...")
-                try:
-                    if self.bot_joiner.driver:
-                        print("Driver exists, calling leave_meeting...")
-                        self.bot_joiner.leave_meeting()
-                        print("Leave meeting call completed")
-                    else:
-                        print("Driver does not exist")
-                except Exception as e:
-                    print(f"Error leaving meeting: {e}")
-            else:
-                print("Bot is not joined to meeting or bot_joiner not available")
+            print("=== GRACEFUL SHUTDOWN COMPLETED ===")
             
-            # Close bot driver
-            if hasattr(self, 'bot_joiner') and self.bot_joiner:
-                print("Closing Selenium browser...")
-                try:
-                    # DISABLED FOR DEVELOPMENT - Keep browser open
-                    # self.bot_joiner.close_driver()
-                    print("Selenium browser kept open for development")
-                except Exception as e:
-                    print(f"Error closing Selenium browser: {e}")
-            else:
-                print("Bot joiner not available for cleanup")
-                
-            print("=== CLEANUP ON EXIT COMPLETED ===")
+            # Actually exit the program
+            print("Exiting program...")
+            QApplication.quit()
+            os._exit(0)
                 
         except Exception as e:
-            print(f"Error during atexit cleanup: {e}")
+            print(f"Error during graceful shutdown: {e}")
             import traceback
             traceback.print_exc()
+            # Force exit even if there's an error
+            os._exit(1)
+
+    def closeEvent(self, event):
+        """Handle application close event - now uses unified graceful shutdown"""
+        try:
+            self.graceful_shutdown()
+            event.accept()
+        except Exception as e:
+            print(f"Error during closeEvent: {e}")
+            event.accept()
+
+    def shutdown_from_popup(self):
+        """Handle shutdown from popup button - sends SIGINT to trigger graceful shutdown"""
+        try:
+            print("Shutdown requested from popup - sending SIGINT...")
+            # Send SIGINT to the current process to trigger graceful shutdown
+            os.kill(os.getpid(), signal.SIGINT)
+        except Exception as e:
+            print(f"Error sending SIGINT from popup: {e}")
+            # Fallback: call graceful shutdown directly
+            self.graceful_shutdown()
 
 def main():
     # Global reference to the window for cleanup
@@ -1372,13 +1364,17 @@ def main():
     def handle_exit(signum, frame):
         print("Received signal, shutting down gracefully...")
         try:
-            # Call cleanup on the window instance if it exists
+            # Call graceful shutdown on the window instance if it exists
             if 'app_window' in globals() and app_window:
-                print("Calling cleanup on window instance...")
-                app_window.cleanup_on_exit()
+                print("Calling graceful shutdown on window instance...")
+                app_window.graceful_shutdown()
+            else:
+                # If no window instance, exit directly
+                print("No window instance found, exiting directly...")
+                os._exit(0)
         except Exception as e:
             print(f"Error during signal cleanup: {e}")
-        os._exit(0)
+            os._exit(1)
     
     # Set up signal handlers
     signal.signal(signal.SIGINT, handle_exit)
@@ -1394,7 +1390,7 @@ def main():
     app_window.show()
     
     # Register cleanup for the window instance
-    atexit.register(app_window.cleanup_on_exit)
+    atexit.register(app_window.graceful_shutdown)
     
     sys.exit(app.exec())
 

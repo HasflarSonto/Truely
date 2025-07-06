@@ -5,10 +5,18 @@ A comprehensive macOS application that monitors for suspicious processes and aut
 ## 🚀 Features
 
 ### Core Functionality
-- **Real-time Process Monitoring**: Continuously monitors for suspicious processes (default: "cluely")
+- **Real-time Process Monitoring**: Continuously monitors for suspicious processes (set in `config.py`)
 - **Dual-Join Zoom Meetings**: Automatically joins meetings as both a bot and opens Zoom app for user
 - **Automated Chat Alerts**: Sends real-time alerts to meeting chat when suspicious processes are detected
+- **Automated Introduction Messages**: Bot sends a sequence of introduction messages to the meeting chat, including the monitoring key and the list of monitored applications
 - **Graceful Shutdown**: Properly leaves meetings and cleans up resources on exit
+
+### Automated Introduction Message Sequence
+When the bot joins a meeting, it sends the following messages to the chat:
+
+1. `Hello everyone! I'm Truely, your automated meeting monitor.`
+2. `Monitoring Key: <KEY>` (where `<KEY>` is set in `config.py`)
+3. `I'll be keeping an eye on the following applications and processes during this meeting: app1, app2, ...` (where the list is set in `config.py`)
 
 ### Bot Automation
 - **Selenium WebDriver**: Headless Chrome automation for Zoom web client
@@ -27,7 +35,7 @@ A comprehensive macOS application that monitors for suspicious processes and aut
 ### Process Monitoring
 ```python
 # Monitors for suspicious processes by name, path, and hash
-self.process_names = ["cluely"]
+self.process_names = APPS  # Set in config.py
 self.suspicious_paths = ["/Applications/Cluely.app/Contents/MacOS/Cluely"]
 self.suspicious_hashes = []
 ```
@@ -195,7 +203,7 @@ The application is fully functional and ready for production use with proper bro
 - **Real-time Detection**: Continuously monitors for suspicious processes in the background
 - **Menu Bar Icon**: Always visible, changes color when suspicious activity is detected
 - **Always-on-Top Alert**: Warning window appears over other apps when threats are found
-- **Editable Process List**: Add/remove process names to monitor (case-insensitive, partial match)
+- **Config-Driven Process List**: The list of monitored processes is set in `config.py` and cannot be edited from the UI
 - **Multiple Detection Methods**: Flags processes by name, executable path, or hash
 - **Live Status Log**: Real-time updates showing process status
 - **Manual Check**: Instant process status check with "Check Now" button
