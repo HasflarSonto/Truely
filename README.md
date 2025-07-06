@@ -1,6 +1,193 @@
-# Truely - Suspicious Process Monitor & Meeting Joiner
+# Truely - Dual-Join Process Monitor
 
-A modern, real-time GUI application for monitoring and detecting suspicious processes on macOS, with integrated meeting join functionality for Zoom and Google Meet. Features a menu bar icon, always-on-top alert, and a responsive, beautiful interface.
+A comprehensive macOS application that monitors for suspicious processes and automatically joins Zoom meetings with dual-join capability (both bot and user simultaneously).
+
+## 🚀 Features
+
+### Core Functionality
+- **Real-time Process Monitoring**: Continuously monitors for suspicious processes (default: "cluely")
+- **Dual-Join Zoom Meetings**: Automatically joins meetings as both a bot and opens Zoom app for user
+- **Automated Chat Alerts**: Sends real-time alerts to meeting chat when suspicious processes are detected
+- **Graceful Shutdown**: Properly leaves meetings and cleans up resources on exit
+
+### Bot Automation
+- **Selenium WebDriver**: Headless Chrome automation for Zoom web client
+- **Smart Element Detection**: Multiple strategies for finding and interacting with Zoom interface elements
+- **Robust Error Handling**: Fallback mechanisms for different Zoom interface states
+- **Chat Integration**: Opens chat panel and sends messages automatically
+
+### User Interface
+- **System Tray Icon**: Always-on-top monitoring with visual alerts
+- **Alert Popup**: Prominent warning when suspicious processes detected
+- **Status Logging**: Real-time status updates and debugging information
+- **Graceful Shutdown**: Popup button triggers full cleanup process
+
+## 🛠️ Technical Implementation
+
+### Process Monitoring
+```python
+# Monitors for suspicious processes by name, path, and hash
+self.process_names = ["cluely"]
+self.suspicious_paths = ["/Applications/Cluely.app/Contents/MacOS/Cluely"]
+self.suspicious_hashes = []
+```
+
+### Dual-Join Meeting System
+```python
+# Joins both bot and user to the same meeting
+bot_success = self.bot_joiner.join_zoom_meeting_bot(meeting_id, "Truely Bot", passcode)
+user_success = self.meeting_joiner.join_zoom_meeting(meeting_id, passcode)
+```
+
+### Bot Automation Features
+- **Multiple Selector Strategies**: 10+ different XPath selectors for robust element detection
+- **Iframe Handling**: Automatically switches to meeting iframe when needed
+- **Double-Click Leave**: Properly handles Zoom's highlight-then-leave button behavior
+- **JavaScript Fallbacks**: Uses JavaScript clicks when regular clicks fail
+
+### Chat Alert System
+```python
+# Clean, formatted alerts without HTML tags
+alert_message = (
+    f"ALERT: SUSPICIOUS ACTIVITY DETECTED [{timestamp}]\n"
+    f"{clean_process_info}\n\n"
+    "This process has been flagged as potentially suspicious by Truely monitoring system."
+)
+```
+
+## 🔧 Setup & Installation
+
+### Prerequisites
+- macOS (tested on macOS 13+)
+- Python 3.8+
+- Chrome browser installed
+
+### Dependencies
+```bash
+pip install PyQt6 selenium webdriver-manager psutil
+```
+
+### Auto-Installation
+The application automatically installs Selenium and webdriver-manager if not present:
+```python
+def install_selenium_if_needed():
+    """Automatically install Selenium and webdriver-manager if not available"""
+```
+
+## 🚀 Usage
+
+### Starting the Application
+```bash
+python3 truely_dual_join.py
+```
+
+### Initial Setup
+1. **Meeting Setup**: Application prompts for Zoom meeting URL/ID at startup
+2. **Dual-Join**: Automatically joins as bot and opens Zoom app for user
+3. **Chat Integration**: Opens chat panel and sends introduction message
+4. **Monitoring Active**: Continuously monitors for suspicious processes
+
+### Alert System
+- **Visual Alert**: Red popup appears when suspicious process detected
+- **Chat Alert**: Bot sends formatted alert to meeting chat
+- **System Notification**: Tray icon changes and shows notification
+- **Cooldown**: 30-second cooldown between alerts to prevent spam
+
+### Shutdown Process
+- **Graceful Exit**: Ctrl+C or popup button triggers full cleanup
+- **Goodbye Message**: Bot sends "Goodbye everyone! Truely signing off."
+- **Leave Meeting**: Double-clicks leave button with proper timing
+- **Resource Cleanup**: Closes Selenium driver and stops monitoring
+
+## 🔍 Key Technical Solutions
+
+### 1. Robust Element Detection
+```python
+# Multiple strategies for finding leave button
+leave_selectors = [
+    "//button[@aria-label='Leave']",
+    "//button[contains(@class, 'footer-button-base__button') and @aria-label='Leave']",
+    "//button[.//span[contains(@class, 'footer-button-base__button-label') and text()='Leave']]",
+    "//button[.//svg[contains(@class, 'SvgLeave')]]",
+    # ... 10+ more selectors
+]
+```
+
+### 2. Double-Click Leave Strategy
+```python
+# Properly handles Zoom's highlight-then-leave behavior
+print("Clicking leave button first time (to highlight)...")
+leave_button.click()
+time.sleep(0.5)  # Wait for highlight
+print("Clicking leave button second time (to leave)...")
+leave_button.click()
+```
+
+### 3. HTML Tag Cleaning
+```python
+# Extracts clean text from HTML-formatted process info
+def clean_process_info_for_chat(self, process_info: str) -> str:
+    clean_text = re.sub(r'<[^>]+>', '', process_info)
+    # Returns: [NAME] cluely (PID: 49311)
+```
+
+### 4. Graceful Shutdown
+```python
+# Multiple cleanup triggers
+atexit.register(self.cleanup_on_exit)  # Automatic cleanup
+signal.signal(signal.SIGINT, handle_exit)  # Ctrl+C handling
+popup_button.clicked.connect(self.shutdown_from_popup)  # Popup shutdown
+```
+
+## 🎯 Working Features
+
+### ✅ Fully Functional
+- **Dual-Join System**: Bot and user join same meeting simultaneously
+- **Process Monitoring**: Real-time detection of suspicious processes
+- **Chat Integration**: Opens chat panel and sends messages
+- **Alert System**: Clean, formatted alerts without HTML tags
+- **Graceful Shutdown**: Properly leaves meetings and cleans up
+- **Error Handling**: Robust fallback mechanisms throughout
+- **Development Mode**: Browser stays open for debugging
+
+### 🔧 Technical Achievements
+- **Selenium Automation**: Headless Chrome with proper Zoom integration
+- **Element Detection**: 10+ selector strategies for maximum compatibility
+- **Iframe Handling**: Automatic iframe switching for Zoom interface
+- **Signal Handling**: Proper SIGINT/SIGTERM handling
+- **Resource Management**: Clean process and driver cleanup
+- **Logging System**: Comprehensive debugging and status logging
+
+## 📝 Development Notes
+
+### Browser Configuration
+```python
+# Headless Chrome with automation detection disabled
+chrome_options.add_argument("--headless=new")
+chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+```
+
+### Development Mode
+- Browser stays open for debugging (commented out `close_driver()`)
+- Detailed logging throughout all operations
+- Debug output for chat messages
+
+### Error Recovery
+- Multiple fallback strategies for all operations
+- Graceful degradation when elements not found
+- Comprehensive exception handling
+
+## 🎉 Success Metrics
+
+- ✅ **Dual-Join Working**: Both bot and user successfully join meetings
+- ✅ **Process Detection**: Real-time monitoring detects suspicious processes
+- ✅ **Chat Integration**: Bot opens chat and sends formatted messages
+- ✅ **Graceful Shutdown**: Properly leaves meetings and cleans up resources
+- ✅ **Error Handling**: Robust fallback mechanisms throughout
+- ✅ **Development Ready**: Browser stays open for debugging
+
+The application is fully functional and ready for production use with proper browser cleanup enabled.
 
 ## ✨ Features
 
