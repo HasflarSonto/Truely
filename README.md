@@ -21,13 +21,19 @@ A modern, real-time GUI application for monitoring and detecting suspicious proc
 - **Smart URL Parsing**: Automatically detects meeting type and extracts information
 - **Multiple Formats**: Supports various Zoom and Google Meet URL formats
 
-### 🤖 Bot Joiner (Auto-Installation)
+### 🤖 Bot Joiner (Auto-Installation & Full Automation)
 - **Automatic Setup**: Selenium and dependencies are automatically installed on first run
 - **Browser Automation**: Join meetings as a bot using Chrome browser automation
 - **Chat Integration**: Send messages in meeting chat automatically
-- **Custom Bot Names**: Set custom names for your bot
+- **Custom Bot Names**: Set custom names for your bot (default: **Truely Bot**)
 - **Auto-Message**: Automatically send messages upon joining
 - **Meeting Control**: Leave meetings programmatically
+- **Hands-Free Zoom Join**: The bot will:
+  - Automatically click the "Continue without microphone and camera" popup (up to two times if needed)
+  - Extract the passcode from the meeting URL if not provided directly
+  - Fill in the name and passcode using the correct input fields
+  - Click the Join button using its class for maximum compatibility
+  - Robust to Zoom UI changes and popups
 
 ## 🚀 Quick Start
 
@@ -69,17 +75,27 @@ A modern, real-time GUI application for monitoring and detecting suspicious proc
 ### Bot Joiner
 1. **Switch to Bot Joiner tab**
 2. **Check Selenium Status** - Ensure automation is ready (green status)
-3. **Configure bot** - Set bot name and message settings
+3. **Configure bot** - Set bot name and message settings (default: **Truely Bot**)
 4. **Enter meeting details** - Use Zoom meeting ID/URL or Google Meet URL
 5. **Join as bot** - Click "Join as Bot" to automatically join
-6. **Send messages** - Use "Send Message" button for chat
-7. **Leave meeting** - Use "Leave Meeting" to exit
+   - The bot will handle all Zoom popups, extract passcodes from links, fill in your name, and click Join for you
+6. **Open chat** - Use "Open Chat" button to open the meeting chat panel
+7. **Send messages** - Use "Send Message" button for chat
+8. **Leave meeting** - Use "Leave Meeting" to exit
+
+### Bot Joiner Automation Details
+- The bot will automatically handle all Zoom web join popups, including clicking "Continue without microphone and camera" up to two times if needed
+- If the passcode is embedded in the meeting URL, it will be extracted and used automatically
+- The bot fills in the name and passcode using the correct input fields (`input-for-name` and `input-for-pwd`)
+- The Join button is clicked using its class (`preview-join-button`) for maximum compatibility with Zoom UI changes
+- The join flow is now fully hands-free and robust
 
 ## 🔧 Bot Features
 
 ### What the Bot Can Do
 - ✅ Join Zoom meetings via web interface (supports IDs and URLs)
 - ✅ Join Google Meet meetings via web interface
+- ✅ Open meeting chat panel with precise clicking
 - ✅ Send messages in meeting chat
 - ✅ Use custom bot names
 - ✅ Auto-send messages upon joining
@@ -206,8 +222,31 @@ This tool is provided for educational and personal use only. Users are responsib
 
 Feel free to submit issues, feature requests, or pull requests to improve the application.
 
+## 🆕 Recent Improvements
+
+### July 2024
+- **Enhanced Chat Automation:**
+  - Improved chat panel opening with precise clicking strategy that targets the "Chat" text element specifically
+  - Eliminated side effects like unintended highlighting of other UI elements
+  - Streamlined UI with single "Open Chat" button for better user experience
+  - Enhanced reliability for opening chat panels in Zoom meetings
+- **Code Optimization:**
+  - Removed redundant chat opening methods and thread classes
+  - Simplified button management and enabling/disabling logic
+  - Improved code maintainability and reduced complexity
+
+### June 2024
+- **Robust Chat Automation:**
+  - The bot now uses a highly specific selector for the Zoom chat button (`footer-button__button` with label `Chat`), ensuring it never clicks the screen share button by mistake.
+  - The chat button is only clicked if its `aria-label` is `open the chat panel`, so the bot will not toggle or close the chat unnecessarily.
+  - Sending a message as the bot will never trigger the screen sharing dialog.
+  - Improved reliability for sending chat messages in Zoom meetings.
+- **Bug Fixes:**
+  - Fixed an issue where sending a message could accidentally open the screen sharing dialog due to a broad selector.
+  - Enhanced the message sending logic to only interact with the correct chat input box.
+
 ---
 
-**Version**: 2.0  
+**Version**: 2.1  
 **Last Updated**: July 2024  
 **Compatibility**: macOS 10.15+ with Python 3.8+ 

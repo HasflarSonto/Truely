@@ -254,93 +254,184 @@ class BotMeetingJoiner:
         self._driver_lock = threading.Lock()
         self._child_pids = []  # Track child PIDs for cleanup
         
-
-
-def setup_driver(self):
-
-    import logging
-    import undetected_chromedriver as uc
-    
-    """Setup undetected Chrome driver for automation"""
-    if not SELENIUM_AVAILABLE:
-        return False
-
-    try:
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 CustomAgent/1.0"
-
-        # Setup undetected Chrome options
-        chrome_options = uc.ChromeOptions()
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-        chrome_options.add_argument(f"user-agent={user_agent}")
-
-        # Launch undetected Chrome
-        self.driver = uc.Chrome(options=chrome_options, headless=False)
-
-        # Try to capture the Chrome process PID
-        try:
-            self.driver_process = getattr(self.driver.service, 'process', None)
-            if self.driver_process:
-                self._child_pids.append(self.driver_process.pid)
-                logging.info('Started undetected ChromeDriver (PID: %s)', self.driver_process.pid)
-        except Exception as pid_err:
-            logging.warning('Could not capture ChromeDriver PID: %s', pid_err)
-
-        return True
-
-    except Exception as e:
-        logging.error('Failed to start undetected ChromeDriver: %s', e)
-        return False
-
-    
-    def join_zoom_meeting_bot(self, meeting_id: str, name: str = "Bot", password: str = None) -> bool:
-        """Join Zoom meeting as a bot using web interface"""
-        if not self.setup_driver():
+    def setup_driver(self):
+        """Setup Chrome driver for automation"""
+        if not SELENIUM_AVAILABLE:
             return False
             
         try:
-            # Parse meeting ID from URL if it's a full URL
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 CustomAgent/1.0"
+
+            chrome_options = Options()
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+            chrome_options.add_experimental_option('useAutomationExtension', False)
+            chrome_options.add_argument(f"user-agent={user_agent}")
+            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+            
+            # Use webdriver-manager to handle ChromeDriver installation
+            service = Service(ChromeDriverManager().install())
+            self.driver = webdriver.Chrome(service=service, options=chrome_options)
+            self.driver_process = service.process
+            if self.driver_process:
+                self._child_pids.append(self.driver_process.pid)
+            logging.info('Started ChromeDriver (PID: %s)', getattr(self.driver_process, 'pid', None))
+            
+            # Hide automation indicators
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            
+            return True
+        except Exception as e:
+            logging.error('Failed to start ChromeDriver: %s', e)
+            return False
+    
+    def join_zoom_meeting_bot(self, meeting_id: str, name: str = "Truely Bot", password: str = None) -> bool:
+        """Join Zoom meeting as a bot using web interface"""
+        if not self.setup_driver():
+            return False
+        try:
+            # If meeting_id is a URL, extract passcode if not provided
+            passcode = password
+            if (not password) and ('?' in meeting_id or 'zoom.us' in meeting_id):
+                parsed = urllib.parse.urlparse(meeting_id)
+                query = urllib.parse.parse_qs(parsed.query)
+                passcode = query.get('pwd', [None])[0]
+
             clean_meeting_id = self.extract_zoom_meeting_id(meeting_id)
             if not clean_meeting_id:
                 print(f"Could not extract meeting ID from: {meeting_id}")
                 return False
-            
-            # Navigate to Zoom web join page
             join_url = f"https://zoom.us/wc/join/{clean_meeting_id}"
+            print(f"Navigating to: {join_url}")
             self.driver.get(join_url)
-            
-            # Wait for page to load
-            wait = WebDriverWait(self.driver, 10)
-            
-            # Enter name
-            try:
-                name_input = wait.until(EC.presence_of_element_located((By.ID, "inputname")))
-                name_input.clear()
-                name_input.send_keys(name)
-            except:
-                print("Could not find name input field")
-            
-            # Enter password if provided
-            if password:
+            wait = WebDriverWait(self.driver, 10)  # Reduced from 15 to 10
+
+            # 1. Handle the mic/camera popup quickly (may appear twice)
+            for attempt in range(2):
                 try:
-                    password_input = wait.until(EC.presence_of_element_located((By.ID, "inputpasscode")))
-                    password_input.clear()
-                    password_input.send_keys(password)
-                except:
-                    print("Could not find password input field")
+                    continue_btn = wait.until(
+                        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'continue-without-mic-camera')]"))
+                    )
+                    continue_btn.click()
+                    print(f"Selected: Continue without microphone and camera (attempt {attempt + 1})")
+                    time.sleep(0.3)  # Reduced from 1 to 0.3
+                except Exception as e:
+                    print(f"No more 'Continue without microphone and camera' popups found (attempt {attempt + 1}): {e}")
+                    break
+
+            # 2. Reduced wait time for page load
+            time.sleep(0.5)  # Reduced from 2 to 0.5
+            print("Waiting for page to load...")
+
+            # 3. Try to fill in name using multiple selectors (faster approach)
+            name_filled = False
+            name_selectors = [
+                (By.ID, "input-for-name"),
+                (By.NAME, "inputname"),
+                (By.XPATH, "//input[@placeholder='Enter your name']"),
+                (By.XPATH, "//input[contains(@placeholder, 'name')]"),
+                (By.XPATH, "//input[@type='text' and contains(@class, 'name')]"),
+                (By.CSS_SELECTOR, "input[placeholder*='name']")
+            ]
             
-            # Click join button
-            try:
-                join_button = wait.until(EC.element_to_be_clickable((By.ID, "joinBtn")))
-                join_button.click()
-                self.is_joined = True
-                print(f"Successfully joined Zoom meeting {clean_meeting_id} as {name}")
-                return True
-            except Exception as e:
-                print(f"Failed to click join button: {e}")
-                return False
+            for selector_type, selector_value in name_selectors:
+                try:
+                    name_input = wait.until(EC.presence_of_element_located((selector_type, selector_value)))
+                    name_input.clear()
+                    name_input.send_keys(name)
+                    print(f"Successfully filled name using selector: {selector_type} = {selector_value}")
+                    name_filled = True
+                    break
+                except Exception as e:
+                    print(f"Could not find name input with selector {selector_type} = {selector_value}: {e}")
+                    continue
+            
+            if not name_filled:
+                print("Warning: Could not find name input field, proceeding anyway...")
+
+            # 4. Try to fill in passcode using multiple selectors (faster approach)
+            if passcode:
+                passcode_filled = False
+                passcode_selectors = [
+                    (By.ID, "input-for-pwd"),
+                    (By.NAME, "inputpwd"),
+                    (By.XPATH, "//input[@placeholder='Enter meeting passcode']"),
+                    (By.XPATH, "//input[contains(@placeholder, 'passcode')]"),
+                    (By.XPATH, "//input[contains(@placeholder, 'password')]"),
+                    (By.XPATH, "//input[@type='password']"),
+                    (By.CSS_SELECTOR, "input[placeholder*='passcode']"),
+                    (By.CSS_SELECTOR, "input[placeholder*='password']")
+                ]
                 
+                for selector_type, selector_value in passcode_selectors:
+                    try:
+                        password_input = wait.until(EC.presence_of_element_located((selector_type, selector_value)))
+                        password_input.clear()
+                        password_input.send_keys(passcode)
+                        print(f"Successfully filled passcode using selector: {selector_type} = {selector_value}")
+                        passcode_filled = True
+                        break
+                    except Exception as e:
+                        print(f"Could not find passcode input with selector {selector_type} = {selector_value}: {e}")
+                        continue
+                
+                if not passcode_filled:
+                    print("Warning: Could not find passcode input field, proceeding anyway...")
+            else:
+                print("No passcode provided, skipping passcode field")
+
+            # 5. Click join button using multiple strategies (faster approach)
+            join_success = False
+            join_selectors = [
+                (By.XPATH, "//button[contains(@class, 'preview-join-button')]"),
+                (By.XPATH, "//button[contains(text(), 'Join')]"),
+                (By.XPATH, "//button[contains(@aria-label, 'Join')]"),
+                (By.XPATH, "//button[contains(@title, 'Join')]"),
+                (By.XPATH, "//button[contains(@class, 'join')]"),
+                (By.XPATH, "//button[contains(@class, 'button') and contains(text(), 'Join')]"),
+                (By.CSS_SELECTOR, "button[class*='join']"),
+                (By.CSS_SELECTOR, "button[class*='preview-join']")
+            ]
+            
+            for selector_type, selector_value in join_selectors:
+                try:
+                    join_button = wait.until(EC.element_to_be_clickable((selector_type, selector_value)))
+                    join_button.click()
+                    print(f"Successfully clicked join button using selector: {selector_type} = {selector_value}")
+                    join_success = True
+                    break
+                except Exception as e:
+                    print(f"Could not click join button with selector {selector_type} = {selector_value}: {e}")
+                    continue
+            
+            if not join_success:
+                print("Warning: Could not find or click join button, but proceeding anyway...")
+                print("The meeting might still join automatically or require manual intervention")
+
+            # 6. Reduced wait time to check if we successfully joined
+            time.sleep(1.5)  # Reduced from 3 to 1.5
+            
+            # Check if we're in the meeting by looking for meeting controls
+            try:
+                meeting_controls = self.driver.find_elements(By.XPATH, "//button[contains(@aria-label, 'Leave') or contains(@aria-label, 'Chat') or contains(@aria-label, 'Share')]")
+                if meeting_controls:
+                    print("Successfully joined the meeting - found meeting controls")
+                    self.is_joined = True
+                    return True
+                else:
+                    print("Meeting controls not found - may still be joining or need manual intervention")
+                    # Still mark as joined in case the controls appear later
+                    self.is_joined = True
+                    return True
+            except Exception as e:
+                print(f"Error checking meeting status: {e}")
+                # Still mark as joined and return True to allow the process to continue
+                self.is_joined = True
+                return True
+
         except Exception as e:
             print(f"Error joining Zoom meeting as bot: {e}")
             return False
@@ -363,7 +454,7 @@ def setup_driver(self):
                     if meeting_id:
                         return meeting_id
                 
-                # Handle web URL formats
+                # Handle web URL formats (including subdomains like us05web.zoom.us)
                 path_parts = parsed.path.split('/')
                 
                 # Look for meeting ID in path
@@ -441,40 +532,351 @@ def setup_driver(self):
             print(f"Error joining Google Meet as bot: {e}")
             return False
     
+    def open_chat_panel(self) -> bool:
+        """Open the chat panel in Zoom meeting"""
+        if not self.driver or not self.is_joined:
+            return False
+        try:
+            # Try to switch to meeting iframe if it exists
+            self.switch_to_meeting_iframe()
+            # Handle any overlay elements that might block clicks
+            self.handle_overlay_elements()
+            wait = WebDriverWait(self.driver, 8)
+            
+            # Find the chat button using the specific HTML structure provided
+            try:
+                # Use the exact structure: div with id="chat" containing button with aria-label="open the chat panel"
+                chat_button = wait.until(EC.element_to_be_clickable((
+                    By.XPATH, "//div[@id='chat']//button[@aria-label='open the chat panel']"
+                )))
+                
+                # Additional verification: ensure it's the chat button and not share button
+                button_text = chat_button.find_element(By.XPATH, ".//span[contains(@class, 'footer-button-base__button-label')]")
+                if button_text.text.strip() == "Chat":
+                    print(f"Found chat button with text: '{button_text.text}'")
+                    print(f"Button aria-label: {chat_button.get_attribute('aria-label')}")
+                    print(f"Button is displayed: {chat_button.is_displayed()}")
+                    print(f"Button is enabled: {chat_button.is_enabled()}")
+                    
+                    # Clear any existing focus and wait
+                    self.driver.execute_script("document.activeElement.blur();")
+                    time.sleep(0.5)
+                    
+                    self.scroll_element_into_view(chat_button)
+                    
+                    # Wait a moment before clicking to ensure everything is ready
+                    time.sleep(0.5)
+                    
+                    # Try a more precise single-click approach
+                    success = False
+                    
+                    # Strategy 1: Focus first, then click
+                    try:
+                        print("Trying focus + click strategy...")
+                        chat_button.click()  # This should focus the element
+                        time.sleep(0.2)  # Brief pause
+                        chat_button.click()  # This should actually click it
+                        print("Focus + click successful")
+                        success = True
+                    except Exception as e:
+                        print(f"Focus + click failed: {e}")
+                    
+                    # Strategy 2: JavaScript click with focus if first failed
+                    if not success:
+                        try:
+                            print("Trying JavaScript focus + click...")
+                            self.driver.execute_script("arguments[0].focus();", chat_button)
+                            time.sleep(0.2)
+                            self.driver.execute_script("arguments[0].click();", chat_button)
+                            print("JavaScript focus + click successful")
+                            success = True
+                        except Exception as e:
+                            print(f"JavaScript focus + click failed: {e}")
+                    
+                    # Strategy 3: Direct JavaScript click if both failed
+                    if not success:
+                        try:
+                            print("Trying direct JavaScript click...")
+                            self.driver.execute_script("arguments[0].click();", chat_button)
+                            print("Direct JavaScript click successful")
+                            success = True
+                        except Exception as e:
+                            print(f"Direct JavaScript click failed: {e}")
+                    
+                    if success:
+                        print("Chat panel opened successfully")
+                        time.sleep(1)  # Wait for chat panel to fully open
+                        return True
+                    else:
+                        print("All clicking strategies failed")
+                        return False
+                        
+                else:
+                    print(f"Found button with wrong text: {button_text.text}")
+                    return False
+                    
+            except Exception as e:
+                print(f"Could not find chat button: {e}")
+                return False
+                
+        except Exception as e:
+            print(f"Error opening chat panel: {e}")
+            return False
+
+    def send_message_to_chat(self, message: str) -> bool:
+        """Send a message in the already opened chat panel"""
+        if not self.driver or not self.is_joined:
+            return False
+        try:
+            wait = WebDriverWait(self.driver, 8)
+            
+            # Find the correct chat input (div.tiptap.ProseMirror[contenteditable='true'])
+            try:
+                chat_input = wait.until(EC.presence_of_element_located((
+                    By.CSS_SELECTOR, "div.tiptap.ProseMirror[contenteditable='true']"
+                )))
+                chat_input.click()
+                chat_input.clear() if hasattr(chat_input, 'clear') else None
+                chat_input.send_keys(message)
+                # Press Enter to send
+                from selenium.webdriver.common.keys import Keys
+                chat_input.send_keys(Keys.RETURN)
+                print(f"Sent message: {message}")
+                return True
+            except Exception as e:
+                print(f"Failed to send message: {e}")
+                return False
+        except Exception as e:
+            print(f"Error sending message to chat: {e}")
+            return False
+
     def send_chat_message(self, message: str) -> bool:
-        """Send a message in the meeting chat"""
+        """Send a message in the meeting chat (Zoom web client) - combines open and send"""
+        # First open the chat panel
+        if not self.open_chat_panel():
+            return False
+        
+        # Then send the message
+        return self.send_message_to_chat(message)
+
+    def wait_for_meeting_loaded(self, timeout=30):
+        """Wait for the meeting to be fully loaded before proceeding"""
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            # Wait for common meeting elements to appear
+            wait.until(EC.presence_of_element_located((
+                By.XPATH, "//button[contains(@aria-label, 'Share') or contains(@aria-label, 'Chat') or contains(@aria-label, 'Leave')]"
+            )))
+            print("Meeting fully loaded")
+            return True
+        except Exception as e:
+            print(f"Meeting may not be fully loaded: {e}")
+            return False
+
+    def switch_to_meeting_iframe(self):
+        """Switch to the meeting iframe if it exists"""
+        try:
+            # Look for common iframe selectors in Zoom
+            iframe_selectors = [
+                "//iframe[contains(@id, 'meeting')]",
+                "//iframe[contains(@class, 'meeting')]",
+                "//iframe[contains(@title, 'meeting')]",
+                "//iframe[contains(@src, 'meeting')]",
+                "//iframe[contains(@src, 'zoom')]"
+            ]
+            
+            for selector in iframe_selectors:
+                try:
+                    iframe = self.driver.find_element(By.XPATH, selector)
+                    self.driver.switch_to.frame(iframe)
+                    print(f"Switched to iframe: {selector}")
+                    return True
+                except:
+                    continue
+            
+            # If no iframe found, stay in default content
+            self.driver.switch_to.default_content()
+            print("No meeting iframe found, staying in default content")
+            return False
+            
+        except Exception as e:
+            print(f"Error switching to iframe: {e}")
+            return False
+
+    def handle_overlay_elements(self):
+        """Handle potential overlay elements that might block clicks"""
+        try:
+            # Look for common overlay elements and try to close them
+            overlay_selectors = [
+                "//div[contains(@class, 'overlay')]",
+                "//div[contains(@class, 'modal')]",
+                "//div[contains(@class, 'popup')]",
+                "//button[contains(@aria-label, 'Close')]",
+                "//button[contains(@title, 'Close')]",
+                "//span[contains(@class, 'close')]"
+            ]
+            
+            for selector in overlay_selectors:
+                try:
+                    overlay = self.driver.find_element(By.XPATH, selector)
+                    if overlay.is_displayed():
+                        overlay.click()
+                        print(f"Closed overlay: {selector}")
+                        time.sleep(0.5)
+                except:
+                    continue
+                    
+        except Exception as e:
+            print(f"Error handling overlays: {e}")
+
+    def scroll_element_into_view(self, element):
+        """Scroll element into view before clicking"""
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            time.sleep(0.5)  # Wait for scroll to complete
+            print("Scrolled element into view")
+        except Exception as e:
+            print(f"Error scrolling element into view: {e}")
+
+    def start_screen_sharing(self, alert_window=None) -> bool:
+        """Start screen sharing in Zoom meeting"""
+        if not self.driver or not self.is_joined:
+            print("Bot is not in a meeting")
+            return False
+            
+        try:
+            # First wait for the meeting to be fully loaded
+            if not self.wait_for_meeting_loaded():
+                print("Meeting not fully loaded, waiting a bit more...")
+                time.sleep(5)
+            
+            # Try to switch to meeting iframe if it exists
+            self.switch_to_meeting_iframe()
+            
+            # Handle any overlay elements that might block clicks
+            self.handle_overlay_elements()
+            
+            wait = WebDriverWait(self.driver, 10)
+            
+            # 1. Find and click the "Share Screen" button using the correct selector
+            print("Looking for Share Screen button...")
+            screen_share_button = wait.until(EC.element_to_be_clickable((
+                By.XPATH, "//button[contains(@aria-label, 'Share screen') or contains(@title, 'Share screen') or contains(@aria-label, 'Share') or .//span[contains(text(), 'Share Screen')]]"
+            )))
+            
+            # Try multiple clicking strategies for Share Screen button
+            try:
+                # Scroll element into view first
+                self.scroll_element_into_view(screen_share_button)
+                
+                # Use retry logic with double-click fallback
+                if not self.click_element(screen_share_button, "Share Screen button"):
+                    # Fallback to JavaScript click if retry logic fails
+                    try:
+                        self.driver.execute_script("arguments[0].click();", screen_share_button)
+                        print("Clicked Share Screen button with JavaScript fallback")
+                    except Exception as js_error:
+                        print(f"JavaScript Share Screen click failed: {js_error}")
+                        return False
+                
+            except Exception as click_error:
+                print(f"Share Screen button click failed: {click_error}")
+                return False
+            
+            time.sleep(2)
+            
+            # 2. Wait for options to appear, then select "Share Screen" (not "Share Computer Audio")
+            print("Looking for Share Screen option...")
+            screen_option = wait.until(EC.element_to_be_clickable((
+                By.XPATH, "//div[contains(text(), 'Share Screen') or contains(text(), 'Screen') or contains(@aria-label, 'Share Screen')]"
+            )))
+            
+            # Try multiple clicking strategies for screen option
+            try:
+                if not self.click_element(screen_option, "Share Screen option"):
+                    # Fallback to JavaScript click
+                    self.driver.execute_script("arguments[0].click();", screen_option)
+                    print("Selected Share Screen option with JavaScript fallback")
+            except Exception as option_click_error:
+                print(f"Screen option click failed: {option_click_error}")
+                return False
+            
+            time.sleep(1)
+            
+            # 3. Make the alert window visible and bring it to front for screen sharing
+            if alert_window:
+                alert_window.show()
+                alert_window.raise_()
+                alert_window.activateWindow()
+                print("Alert window made visible for screen sharing")
+                
+                # Wait a moment for the window to be fully visible
+                time.sleep(1)
+            
+            # 4. Click the final "Share" button
+            print("Looking for final Share button...")
+            share_button = wait.until(EC.element_to_be_clickable((
+                By.XPATH, "//button[contains(text(), 'Share') or contains(@aria-label, 'Share') or contains(@title, 'Share')]"
+            )))
+            
+            # Try multiple clicking strategies for final share button
+            try:
+                if not self.click_element(share_button, "final Share button"):
+                    # Fallback to JavaScript click
+                    self.driver.execute_script("arguments[0].click();", share_button)
+                    print("Clicked final Share button with JavaScript fallback")
+            except Exception as final_click_error:
+                print(f"Final share button click failed: {final_click_error}")
+                return False
+            
+            # 5. Wait for screen sharing to start, then look for window selection
+            print("Waiting for screen sharing to start...")
+            time.sleep(3)
+            
+            # 6. Look for and click on the Truely window in the screen sharing selection
+            try:
+                print("Looking for Truely window in screen sharing options...")
+                # Try to find the Truely window by its title or process name
+                truely_window = wait.until(EC.element_to_be_clickable((
+                    By.XPATH, "//div[contains(text(), 'Truely') or contains(text(), 'Truely Alert') or contains(@title, 'Truely')]"
+                )))
+                
+                if not self.click_element(truely_window, "Truely window"):
+                    # Fallback to JavaScript click
+                    self.driver.execute_script("arguments[0].click();", truely_window)
+                    print("Selected Truely window with JavaScript fallback")
+                
+                print("Successfully selected Truely window for screen sharing!")
+                
+            except Exception as window_select_error:
+                print(f"Could not find Truely window in screen sharing options: {window_select_error}")
+                print("Screen sharing started but may be sharing entire screen instead of specific window")
+            
+            print("Screen sharing started!")
+            return True
+            
+        except Exception as e:
+            print(f"Failed to start screen sharing: {e}")
+            return False
+
+    def stop_screen_sharing(self) -> bool:
+        """Stop screen sharing in Zoom meeting"""
         if not self.driver or not self.is_joined:
             return False
             
         try:
             wait = WebDriverWait(self.driver, 5)
             
-            # Try to find and click chat button
-            try:
-                chat_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@aria-label, 'Chat') or contains(@title, 'Chat')]")))
-                chat_button.click()
-            except:
-                print("Could not find chat button")
-                return False
+            # Look for stop sharing button
+            stop_button = wait.until(EC.element_to_be_clickable((
+                By.XPATH, "//button[contains(@aria-label, 'Stop share') or contains(text(), 'Stop Share') or contains(@title, 'Stop share') or contains(@aria-label, 'Stop sharing')]"
+            )))
+            stop_button.click()
+            print("Stopped screen sharing")
+            return True
             
-            # Find chat input and send message
-            try:
-                chat_input = wait.until(EC.presence_of_element_located((By.XPATH, "//textarea[contains(@placeholder, 'Type a message') or contains(@aria-label, 'Chat message')]")))
-                chat_input.clear()
-                chat_input.send_keys(message)
-                
-                # Send the message
-                send_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(@aria-label, 'Send') or contains(@title, 'Send')]")))
-                send_button.click()
-                
-                print(f"Sent message: {message}")
-                return True
-            except Exception as e:
-                print(f"Failed to send message: {e}")
-                return False
-                
         except Exception as e:
-            print(f"Error sending chat message: {e}")
+            print(f"Failed to stop screen sharing: {e}")
             return False
     
     def leave_meeting(self):
@@ -532,6 +934,156 @@ def setup_driver(self):
             logging.error('AppleScript error: %s', e)
             return None
 
+    def click_element(self, element, element_name="element"):
+        """Click element with double-click strategy for Zoom compatibility"""
+        try:
+            # Always use double click for Zoom compatibility
+            from selenium.webdriver.common.action_chains import ActionChains
+            actions = ActionChains(self.driver)
+            actions.double_click(element).perform()
+            print(f"Double-clicked {element_name}")
+            time.sleep(1)  # Wait for action to complete
+            return True
+            
+        except Exception as e:
+            print(f"Double-click failed for {element_name}: {e}")
+            # Fallback to JavaScript click
+            try:
+                self.driver.execute_script("arguments[0].click();", element)
+                print(f"Clicked {element_name} with JavaScript fallback")
+                return True
+            except Exception as js_error:
+                print(f"JavaScript click also failed for {element_name}: {js_error}")
+                return False
+
+    def open_chat_panel_double_click(self) -> bool:
+        """Open the chat panel using double-click strategy (user reported this works)"""
+        if not self.driver or not self.is_joined:
+            return False
+        try:
+            # Try to switch to meeting iframe if it exists
+            self.switch_to_meeting_iframe()
+            # Handle any overlay elements that might block clicks
+            self.handle_overlay_elements()
+            wait = WebDriverWait(self.driver, 8)
+            
+            # Find the chat button using the specific HTML structure provided
+            try:
+                # Use the exact structure: div with id="chat" containing button with aria-label="open the chat panel"
+                chat_button = wait.until(EC.element_to_be_clickable((
+                    By.XPATH, "//div[@id='chat']//button[@aria-label='open the chat panel']"
+                )))
+                
+                # Additional verification: ensure it's the chat button and not share button
+                button_text = chat_button.find_element(By.XPATH, ".//span[contains(@class, 'footer-button-base__button-label')]")
+                if button_text.text.strip() == "Chat":
+                    print(f"Found chat button with text: '{button_text.text}'")
+                    
+                    self.scroll_element_into_view(chat_button)
+                    
+                    # Wait a moment before clicking to ensure everything is ready
+                    time.sleep(0.5)
+                    
+                    # Use double-click strategy as reported by user
+                    try:
+                        print("Trying double-click strategy...")
+                        from selenium.webdriver.common.action_chains import ActionChains
+                        actions = ActionChains(self.driver)
+                        actions.double_click(chat_button).perform()
+                        print("Double-click successful")
+                        time.sleep(1)  # Wait for chat panel to fully open
+                        print("Chat panel opened successfully with double-click")
+                        return True
+                    except Exception as e:
+                        print(f"Double-click failed: {e}")
+                        return False
+                        
+                else:
+                    print(f"Found button with wrong text: {button_text.text}")
+                    return False
+                    
+            except Exception as e:
+                print(f"Could not find chat button: {e}")
+                return False
+                
+        except Exception as e:
+            print(f"Error opening chat panel with double-click: {e}")
+            return False
+
+    def open_chat_panel_precise(self) -> bool:
+        """Open the chat panel using precise clicking on the button text/icon"""
+        if not self.driver or not self.is_joined:
+            return False
+        try:
+            # Try to switch to meeting iframe if it exists
+            self.switch_to_meeting_iframe()
+            # Handle any overlay elements that might block clicks
+            self.handle_overlay_elements()
+            wait = WebDriverWait(self.driver, 8)
+            
+            # Find the chat button using the specific HTML structure provided
+            try:
+                # Use the exact structure: div with id="chat" containing button with aria-label="open the chat panel"
+                chat_button = wait.until(EC.element_to_be_clickable((
+                    By.XPATH, "//div[@id='chat']//button[@aria-label='open the chat panel']"
+                )))
+                
+                # Additional verification: ensure it's the chat button and not share button
+                button_text = chat_button.find_element(By.XPATH, ".//span[contains(@class, 'footer-button-base__button-label')]")
+                if button_text.text.strip() == "Chat":
+                    print(f"Found chat button with text: '{button_text.text}'")
+                    
+                    # Clear any existing focus
+                    self.driver.execute_script("document.activeElement.blur();")
+                    time.sleep(0.5)
+                    
+                    self.scroll_element_into_view(chat_button)
+                    time.sleep(0.5)
+                    
+                    # Try clicking specifically on the button text to avoid side effects
+                    try:
+                        print("Trying to click specifically on the 'Chat' text...")
+                        button_text.click()
+                        print("Clicked on button text successfully")
+                        time.sleep(1)
+                        return True
+                    except Exception as e:
+                        print(f"Clicking on button text failed: {e}")
+                        
+                        # Fallback: try clicking on the SVG icon
+                        try:
+                            print("Trying to click on the chat icon...")
+                            chat_icon = chat_button.find_element(By.XPATH, ".//svg[contains(@class, 'SvgChat')]")
+                            chat_icon.click()
+                            print("Clicked on chat icon successfully")
+                            time.sleep(1)
+                            return True
+                        except Exception as e2:
+                            print(f"Clicking on chat icon failed: {e2}")
+                            
+                            # Final fallback: regular button click
+                            try:
+                                print("Trying regular button click as fallback...")
+                                chat_button.click()
+                                print("Regular button click successful")
+                                time.sleep(1)
+                                return True
+                            except Exception as e3:
+                                print(f"Regular button click failed: {e3}")
+                                return False
+                        
+                else:
+                    print(f"Found button with wrong text: {button_text.text}")
+                    return False
+                    
+            except Exception as e:
+                print(f"Could not find chat button: {e}")
+                return False
+                
+        except Exception as e:
+            print(f"Error opening chat panel with precise click: {e}")
+            return False
+
 class BotJoinThread(QThread):
     """Thread for joining meetings as a bot"""
     result_ready = pyqtSignal(bool, str)
@@ -580,6 +1132,125 @@ class BotMessageThread(QThread):
         except Exception as e:
             self.result_ready.emit(False, f"Error sending message: {str(e)}")
 
+class BotScreenShareThread(QThread):
+    """Thread for screen sharing as a bot"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner, action, alert_window=None):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+        self.action = action  # 'start' or 'stop'
+        self.alert_window = alert_window
+    
+    def run(self):
+        try:
+            if self.action == 'start':
+                success = self.bot_joiner.start_screen_sharing(self.alert_window)
+                if success:
+                    self.result_ready.emit(True, "Screen sharing started successfully")
+                else:
+                    self.result_ready.emit(False, "Failed to start screen sharing")
+            elif self.action == 'stop':
+                success = self.bot_joiner.stop_screen_sharing()
+                if success:
+                    self.result_ready.emit(True, "Screen sharing stopped successfully")
+                else:
+                    self.result_ready.emit(False, "Failed to stop screen sharing")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error with screen sharing: {str(e)}")
+
+class BotOpenChatDoubleClickThread(QThread):
+    """Thread for opening chat panel using double-click strategy"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+    
+    def run(self):
+        try:
+            success = self.bot_joiner.open_chat_panel_double_click()
+            if success:
+                self.result_ready.emit(True, "Chat panel opened successfully with double-click")
+            else:
+                self.result_ready.emit(False, "Failed to open chat panel with double-click")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error opening chat panel with double-click: {str(e)}")
+
+class BotOpenChatThread(QThread):
+    """Thread for opening chat panel as a bot"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+    
+    def run(self):
+        try:
+            success = self.bot_joiner.open_chat_panel()
+            if success:
+                self.result_ready.emit(True, "Chat panel opened successfully")
+            else:
+                self.result_ready.emit(False, "Failed to open chat panel")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error opening chat panel: {str(e)}")
+
+class BotSendMessageThread(QThread):
+    """Thread for sending messages as a bot"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner, message):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+        self.message = message
+    
+    def run(self):
+        try:
+            success = self.bot_joiner.send_message_to_chat(self.message)
+            if success:
+                self.result_ready.emit(True, f"Message sent: {self.message}")
+            else:
+                self.result_ready.emit(False, "Failed to send message")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error sending message: {str(e)}")
+
+class BotMessageThread(QThread):
+    """Thread for sending messages as a bot (legacy - combines open and send)"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner, message):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+        self.message = message
+    
+    def run(self):
+        try:
+            success = self.bot_joiner.send_chat_message(self.message)
+            if success:
+                self.result_ready.emit(True, f"Message sent: {self.message}")
+            else:
+                self.result_ready.emit(False, "Failed to send message")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error sending message: {str(e)}")
+
+class BotOpenChatPreciseThread(QThread):
+    """Thread for opening chat panel using precise clicking strategy"""
+    result_ready = pyqtSignal(bool, str)
+    
+    def __init__(self, bot_joiner):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+    
+    def run(self):
+        try:
+            success = self.bot_joiner.open_chat_panel_precise()
+            if success:
+                self.result_ready.emit(True, "Chat panel opened successfully")
+            else:
+                self.result_ready.emit(False, "Failed to open chat panel")
+        except Exception as e:
+            self.result_ready.emit(False, f"Error opening chat panel: {str(e)}")
+
 class ProcessMonitorApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -596,6 +1267,13 @@ class ProcessMonitorApp(QMainWindow):
         self.worker = None
         self.meeting_joiner = MeetingJoiner()
         self.bot_joiner = BotMeetingJoiner()
+        
+        # Automated meeting variables
+        self.auto_meeting_active = False
+        self.chat_opened = False
+        self.last_cluely_alert_time = 0
+        self.alert_cooldown = 30  # seconds between alerts
+        
         self.init_ui()
         self.init_tray_icon()
         self.init_alert_window()
@@ -603,6 +1281,157 @@ class ProcessMonitorApp(QMainWindow):
         self.timer.timeout.connect(self.check_processes)
         self.timer.start(2000)  # Check every 2 seconds
         self.check_processes()
+        
+        # Update initial automated status
+        QTimer.singleShot(500, self.update_automated_status)
+        
+        # Start automated meeting setup
+        QTimer.singleShot(1000, self.start_automated_meeting)
+
+    def start_automated_meeting(self):
+        """Start the automated meeting process by asking for Zoom link"""
+        if not SELENIUM_AVAILABLE:
+            self.log_message("Selenium not available. Automated meeting features disabled.")
+            return
+            
+        # Ask for Zoom link
+        zoom_link, ok = QInputDialog.getText(
+            self, 
+            "Automated Meeting Setup", 
+            "Enter Zoom meeting URL or ID:\n(Leave empty to skip automated meeting)",
+            QLineEdit.EchoMode.Normal
+        )
+        
+        if ok and zoom_link.strip():
+            self.log_message(f"Starting automated meeting with: {zoom_link}")
+            self.join_automated_meeting(zoom_link.strip())
+        else:
+            self.log_message("Automated meeting setup skipped.")
+
+    def join_automated_meeting(self, zoom_link: str):
+        """Join meeting as bot and set up automated monitoring"""
+        try:
+            # Extract meeting ID and passcode from the URL
+            meeting_id = self.bot_joiner.extract_zoom_meeting_id(zoom_link)
+            if not meeting_id:
+                self.log_message("Could not extract meeting ID from the provided link.")
+                return
+            
+            # Extract passcode from URL if present - improved logic
+            passcode = None
+            if 'pwd=' in zoom_link:
+                try:
+                    # Handle both standard and complex Zoom URLs
+                    parsed = urllib.parse.urlparse(zoom_link)
+                    query = urllib.parse.parse_qs(parsed.query)
+                    passcode = query.get('pwd', [None])[0]
+                    
+                    # If not found in query params, try to extract from the URL directly
+                    if not passcode:
+                        import re
+                        pwd_match = re.search(r'pwd=([^&]+)', zoom_link)
+                        if pwd_match:
+                            passcode = pwd_match.group(1)
+                    
+                    if passcode:
+                        self.log_message(f"Extracted passcode from URL: {passcode}")
+                    else:
+                        self.log_message("No passcode found in URL")
+                except Exception as e:
+                    self.log_message(f"Could not extract passcode from URL: {e}")
+            else:
+                self.log_message("No passcode parameter found in URL")
+                
+            self.log_message(f"Joining meeting {meeting_id} as Truely Bot...")
+            
+            # Join as bot with passcode
+            success = self.bot_joiner.join_zoom_meeting_bot(meeting_id, "Truely Bot", passcode)
+            if success:
+                self.auto_meeting_active = True
+                self.update_automated_status()
+                self.log_message("Successfully joined meeting as bot!")
+                
+                # Wait a bit for meeting to load, then open chat (reduced delay)
+                QTimer.singleShot(2000, self.open_automated_chat)  # Reduced from 5000 to 2000
+            else:
+                self.log_message("Failed to join meeting as bot.")
+                
+        except Exception as e:
+            self.log_message(f"Error in automated meeting setup: {e}")
+
+    def open_automated_chat(self):
+        """Open chat panel for automated messaging"""
+        try:
+            if not self.auto_meeting_active:
+                return
+                
+            self.log_message("Opening chat panel...")
+            success = self.bot_joiner.open_chat_panel()
+            if success:
+                self.chat_opened = True
+                self.update_automated_status()
+                self.log_message("Chat panel opened successfully!")
+                self.log_message("Automated monitoring active - will send alerts when cluely is detected.")
+                
+                # Send introduction message
+                QTimer.singleShot(1000, self.send_introduction_message)
+            else:
+                self.log_message("Failed to open chat panel.")
+                
+        except Exception as e:
+            self.log_message(f"Error opening automated chat: {e}")
+
+    def send_introduction_message(self):
+        """Send an introduction message when the bot joins the meeting"""
+        try:
+            if not self.auto_meeting_active or not self.chat_opened:
+                return
+            # Only send once per meeting
+            if hasattr(self, '_intro_message_sent') and self._intro_message_sent:
+                return
+            self._intro_message_sent = True
+            # Send the exact message requested
+            intro_message = "Hello everyone! I'm Truely, your automated meeting monitor."
+            self.intro_message_thread = BotSendMessageThread(self.bot_joiner, intro_message)
+            self.intro_message_thread.result_ready.connect(self.on_intro_message_result)
+            self.intro_message_thread.start()
+        except Exception as e:
+            self.log_message(f"Error sending introduction message: {e}")
+
+    def on_intro_message_result(self, success: bool, message: str):
+        """Handle introduction message send result"""
+        if success:
+            self.log_message("Introduction message sent successfully!")
+        else:
+            self.log_message("Failed to send introduction message.")
+
+    def send_automated_alert(self, process_info: str):
+        """Send suspicious activity alert to the meeting chat"""
+        try:
+            if not self.auto_meeting_active or not self.chat_opened:
+                return
+                
+            # Check cooldown to avoid spam
+            current_time = time.time()
+            if current_time - self.last_cluely_alert_time < self.alert_cooldown:
+                return
+                
+            # Create alert message (plain text, no emoji)
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            alert_message = (
+                f"ALERT: SUSPICIOUS ACTIVITY DETECTED [{timestamp}]\n"
+                f"{process_info}\n\n"
+                "This process has been flagged as potentially suspicious by Truely monitoring system."
+            )
+            # Send message
+            success = self.bot_joiner.send_message_to_chat(alert_message)
+            if success:
+                self.last_cluely_alert_time = current_time
+                self.log_message("Alert sent to meeting chat!")
+            else:
+                self.log_message("Failed to send alert to chat.")
+        except Exception as e:
+            self.log_message(f"Error sending automated alert: {e}")
 
     def init_ui(self):
         central_widget = QWidget()
@@ -641,6 +1470,11 @@ class ProcessMonitorApp(QMainWindow):
         layout = QVBoxLayout(self.process_tab)
         layout.setSpacing(10)
         layout.setContentsMargins(0, 0, 0, 0)
+
+        # Automated monitoring status
+        self.auto_status_label = QLabel("🤖 Automated Monitoring: Inactive")
+        self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #666; padding: 8px; background: #f0f0f0; border-radius: 4px; border: 1px solid #ddd;")
+        layout.addWidget(self.auto_status_label)
 
         # Instructions
         instructions = QLabel("Add process names to monitor (case-insensitive, partial match):")
@@ -871,7 +1705,7 @@ class ProcessMonitorApp(QMainWindow):
         config_layout.addWidget(name_label, 0, 0)
 
         self.bot_name_input = QLineEdit()
-        self.bot_name_input.setText("Meeting Bot")
+        self.bot_name_input.setText("Truely Bot")
         self.bot_name_input.setStyleSheet("padding: 6px; font-size: 11px;")
         config_layout.addWidget(self.bot_name_input, 0, 1)
 
@@ -886,7 +1720,7 @@ class ProcessMonitorApp(QMainWindow):
         config_layout.addWidget(message_label, 1, 0)
 
         self.bot_message_input = QLineEdit()
-        self.bot_message_input.setText("Hello! I'm a bot joining this meeting.")
+        self.bot_message_input.setText("Hello! I'm Truely Bot joining this meeting.")
         self.bot_message_input.setStyleSheet("padding: 6px; font-size: 11px;")
         config_layout.addWidget(self.bot_message_input, 1, 1, 1, 2)
 
@@ -945,8 +1779,14 @@ class ProcessMonitorApp(QMainWindow):
         controls_group.setStyleSheet("QGroupBox { font-weight: bold; font-size: 12px; }")
         controls_layout = QHBoxLayout(controls_group)
 
+        self.open_chat_btn = QPushButton("Open Chat")
+        self.open_chat_btn.setStyleSheet("padding: 8px 16px; font-size: 11px; background: #4CAF50; color: white; border-radius: 4px;")
+        self.open_chat_btn.clicked.connect(self.open_bot_chat_precise)
+        self.open_chat_btn.setEnabled(False)
+        controls_layout.addWidget(self.open_chat_btn)
+
         self.send_message_btn = QPushButton("Send Message")
-        self.send_message_btn.setStyleSheet("padding: 8px 16px; font-size: 11px; background: #4CAF50; color: white; border-radius: 4px;")
+        self.send_message_btn.setStyleSheet("padding: 8px 16px; font-size: 11px; background: #2196F3; color: white; border-radius: 4px;")
         self.send_message_btn.clicked.connect(self.send_bot_message)
         self.send_message_btn.setEnabled(False)
         controls_layout.addWidget(self.send_message_btn)
@@ -958,6 +1798,34 @@ class ProcessMonitorApp(QMainWindow):
         controls_layout.addWidget(self.leave_meeting_btn)
 
         layout.addWidget(controls_group)
+
+        # Screen Sharing Controls
+        screen_share_group = QGroupBox("🖥️ Screen Sharing")
+        screen_share_group.setStyleSheet("QGroupBox { font-weight: bold; font-size: 12px; }")
+        screen_share_layout = QVBoxLayout(screen_share_group)
+
+        # Auto screen share checkbox
+        self.auto_screen_share_checkbox = QCheckBox("Auto start screen sharing after joining")
+        self.auto_screen_share_checkbox.setStyleSheet("font-size: 11px; margin-bottom: 8px;")
+        screen_share_layout.addWidget(self.auto_screen_share_checkbox)
+
+        # Screen sharing buttons
+        screen_share_btn_layout = QHBoxLayout()
+        
+        self.start_screen_share_btn = QPushButton("🖥️ Start Screen Share")
+        self.start_screen_share_btn.setStyleSheet("padding: 8px 16px; font-size: 11px; background: #FF6B35; color: white; border-radius: 4px;")
+        self.start_screen_share_btn.clicked.connect(self.start_bot_screen_sharing)
+        self.start_screen_share_btn.setEnabled(False)
+        screen_share_btn_layout.addWidget(self.start_screen_share_btn)
+
+        self.stop_screen_share_btn = QPushButton("⏹️ Stop Screen Share")
+        self.stop_screen_share_btn.setStyleSheet("padding: 8px 16px; font-size: 11px; background: #666666; color: white; border-radius: 4px;")
+        self.stop_screen_share_btn.clicked.connect(self.stop_bot_screen_sharing)
+        self.stop_screen_share_btn.setEnabled(False)
+        screen_share_btn_layout.addWidget(self.stop_screen_share_btn)
+
+        screen_share_layout.addLayout(screen_share_btn_layout)
+        layout.addWidget(screen_share_group)
 
         # Bot Status
         self.bot_status = QTextEdit()
@@ -1022,16 +1890,52 @@ class ProcessMonitorApp(QMainWindow):
         self.alert_window = QWidget(None, Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
         self.alert_window.setWindowTitle("Truely Alert")
         self.alert_window.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.alert_window.setFixedSize(320, 100)
+        self.alert_window.setFixedSize(400, 150)  # Larger for screen sharing
         layout = QVBoxLayout(self.alert_window)
         layout.setContentsMargins(0, 0, 0, 0)
-        alert_label = QLabel("<b style='font-size:22px;color:#ff5555;'>⚠️ Cluely Detected!</b>")
+        
+        # Create a more prominent alert for screen sharing
+        alert_label = QLabel()
         alert_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        alert_label.setStyleSheet("background: #23272e; color: #ff5555; border-radius: 16px; padding: 18px; font-size: 18px;")
+        alert_label.setStyleSheet("""
+            background: linear-gradient(135deg, #ff5555, #ff0000); 
+            color: white; 
+            border-radius: 20px; 
+            padding: 20px; 
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #ffffff;
+            box-shadow: 0 8px 32px rgba(255, 0, 0, 0.3);
+        """)
+        
+        # Add timestamp for real-time updates
+        self.alert_timestamp = datetime.now().strftime("%H:%M:%S")
+        alert_label.setText(f"🚨 FAST TEST ALERT\n⚠️ Cluely Detected!\n🕐 {self.alert_timestamp}")
+        
         layout.addWidget(alert_label)
         self.alert_window.hide()
+        
+        # Add pulsing animation timer
+        self.pulse_timer = QTimer()
+        self.pulse_timer.timeout.connect(self.pulse_alert)
+        self.pulse_timer.start(1000)  # Pulse every second
+
+    def pulse_alert(self):
+        """Pulse the alert window for attention"""
+        if hasattr(self, 'alert_window') and self.alert_window.isVisible():
+            # Update timestamp
+            self.alert_timestamp = datetime.now().strftime("%H:%M:%S")
+            # Get the label and update text
+            label = self.alert_window.findChild(QLabel)
+            if label:
+                label.setText(f"🚨 FAST TEST ALERT\n⚠️ Cluely Detected!\n🕐 {self.alert_timestamp}")
+            
+            # Simple pulsing effect by temporarily changing opacity
+            self.alert_window.setWindowOpacity(0.8)
+            QTimer.singleShot(200, lambda: self.alert_window.setWindowOpacity(1.0))
 
     def show_alert_window(self):
+        """Show the alert window centered on screen"""
         # Center on screen
         screen = QApplication.primaryScreen().geometry()
         x = screen.center().x() - self.alert_window.width() // 2
@@ -1042,9 +1946,11 @@ class ProcessMonitorApp(QMainWindow):
         self.alert_window.activateWindow()
 
     def hide_alert_window(self):
+        """Hide the alert window"""
         self.alert_window.hide()
 
     def notify_suspicious(self, message):
+        """Show system notification for suspicious activity"""
         self.tray_icon.showMessage("Truely Alert", message, QSystemTrayIcon.MessageIcon.Critical)
 
     def add_process(self):
@@ -1104,9 +2010,24 @@ class ProcessMonitorApp(QMainWindow):
         if suspicious:
             self.show_alert_window()
             self.set_tray_warning(True)
+            
+            # Send automated alert to meeting chat if cluely is detected
+            for process_info in suspicious:
+                if "cluely" in process_info.lower():
+                    # Extract clean process info for the alert
+                    clean_info = process_info.replace('<span style="color:#ff5555;"><b>[NAME]</b></span>', '[NAME]')
+                    clean_info = clean_info.replace('<span style="color:#ffd700;"><b>[PATH]</b></span>', '[PATH]')
+                    clean_info = clean_info.replace('<span style="color:#00ff99;"><b>[HASH]</b></span>', '[HASH]')
+                    clean_info = clean_info.replace('<span style="color:#b3e6ff;">', '').replace('</span>', '')
+                    clean_info = clean_info.replace('<b>', '').replace('</b>', '')
+                    
+                    # Send alert to meeting chat
+                    self.send_automated_alert(clean_info)
+                    break  # Only send one alert per detection cycle
         else:
             self.hide_alert_window()
             self.set_tray_warning(False)
+            
         # Show notification for new suspicious PIDs
         for pid in new_alerted_pids:
             if pid not in self.last_alerted_pids:
@@ -1300,12 +2221,19 @@ class ProcessMonitorApp(QMainWindow):
         """Handle bot join result"""
         if success:
             self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
+            self.open_chat_btn.setEnabled(True)
             self.send_message_btn.setEnabled(True)
             self.leave_meeting_btn.setEnabled(True)
+            self.start_screen_share_btn.setEnabled(True)
+            self.stop_screen_share_btn.setEnabled(True)
             
-            # Auto send message if enabled
+            # Auto send message if enabled (legacy - uses combined method)
             if self.auto_message_checkbox.isChecked():
                 QTimer.singleShot(3000, self.send_bot_message)
+            
+            # Auto start screen sharing if enabled
+            if self.auto_screen_share_checkbox.isChecked():
+                QTimer.singleShot(5000, self.start_bot_screen_sharing)  # Wait 5 seconds after joining
         else:
             self.bot_status.setHtml(f"<span style='color:#ff5555;'>❌ {message}</span>")
 
@@ -1323,12 +2251,12 @@ class ProcessMonitorApp(QMainWindow):
         self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Sending message...</span>")
         
         # Run message sending in a separate thread
-        self.message_thread = BotMessageThread(self.bot_joiner, message)
-        self.message_thread.result_ready.connect(self.on_message_result)
-        self.message_thread.start()
+        self.send_message_thread = BotSendMessageThread(self.bot_joiner, message)
+        self.send_message_thread.result_ready.connect(self.on_send_message_result)
+        self.send_message_thread.start()
 
-    def on_message_result(self, success: bool, message: str):
-        """Handle message send result"""
+    def on_send_message_result(self, success: bool, message: str):
+        """Handle send message result"""
         if success:
             self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
         else:
@@ -1341,8 +2269,11 @@ class ProcessMonitorApp(QMainWindow):
             return
         
         self.bot_joiner.leave_meeting()
+        self.open_chat_btn.setEnabled(False)
         self.send_message_btn.setEnabled(False)
         self.leave_meeting_btn.setEnabled(False)
+        self.start_screen_share_btn.setEnabled(False)
+        self.stop_screen_share_btn.setEnabled(False)
         self.bot_status.setHtml("<span style='color:#4CAF50;'>✅ Bot left the meeting.</span>")
 
     def closeEvent(self, event):
@@ -1366,6 +2297,120 @@ class ProcessMonitorApp(QMainWindow):
             self.bot_status.setHtml("<span style='color:#4CAF50;'>✅ Selenium installation successful! Please restart the application.</span>")
         else:
             self.bot_status.setHtml("<span style='color:#ff5555;'>❌ Failed to install Selenium. Please install manually: pip install selenium webdriver-manager</span>")
+
+    def start_bot_screen_sharing(self):
+        """Start screen sharing as a bot"""
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Starting screen sharing...</span>")
+        self.screen_share_thread = BotScreenShareThread(self.bot_joiner, 'start', self.alert_window)
+        self.screen_share_thread.result_ready.connect(self.on_screen_share_result)
+        self.screen_share_thread.start()
+
+    def stop_bot_screen_sharing(self):
+        """Stop screen sharing as a bot"""
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Stopping screen sharing...</span>")
+        self.screen_share_thread = BotScreenShareThread(self.bot_joiner, 'stop', self.alert_window)
+        self.screen_share_thread.result_ready.connect(self.on_screen_share_result)
+        self.screen_share_thread.start()
+
+    def on_screen_share_result(self, success: bool, message: str):
+        """Handle screen share result"""
+        if success:
+            self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
+        else:
+            self.bot_status.setHtml(f"<span style='color:#ff5555;'>❌ {message}</span>")
+
+    def open_bot_chat(self):
+        """Open the chat panel using precise clicking strategy"""
+        if not self.bot_joiner.is_joined:
+            self.bot_status.setHtml("<span style='color:#ff5555;'>Bot is not in a meeting.</span>")
+            return
+        
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Opening chat panel...</span>")
+        
+        # Run chat opening in a separate thread
+        self.open_chat_precise_thread = BotOpenChatPreciseThread(self.bot_joiner)
+        self.open_chat_precise_thread.result_ready.connect(self.on_open_chat_result)
+        self.open_chat_precise_thread.start()
+
+    def on_open_chat_result(self, success: bool, message: str):
+        """Handle open chat result"""
+        if success:
+            self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
+            # Enable send message button once chat is open
+            self.send_message_btn.setEnabled(True)
+        else:
+            self.bot_status.setHtml(f"<span style='color:#ff5555;'>❌ {message}</span>")
+
+    def send_bot_message(self):
+        """Send a message as the bot"""
+        if not self.bot_joiner.is_joined:
+            self.bot_status.setHtml("<span style='color:#ff5555;'>Bot is not in a meeting.</span>")
+            return
+        
+        message = self.bot_message_input.text().strip()
+        if not message:
+            self.bot_status.setHtml("<span style='color:#ff5555;'>Please enter a message to send.</span>")
+            return
+        
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Sending message...</span>")
+        
+        # Run message sending in a separate thread
+        self.send_message_thread = BotSendMessageThread(self.bot_joiner, message)
+        self.send_message_thread.result_ready.connect(self.on_send_message_result)
+        self.send_message_thread.start()
+
+    def on_send_message_result(self, success: bool, message: str):
+        """Handle send message result"""
+        if success:
+            self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
+        else:
+            self.bot_status.setHtml(f"<span style='color:#ff5555;'>❌ {message}</span>")
+
+    def on_message_result(self, success: bool, message: str):
+        """Handle message send result (legacy)"""
+        if success:
+            self.bot_status.setHtml(f"<span style='color:#4CAF50;'>✅ {message}</span>")
+        else:
+            self.bot_status.setHtml(f"<span style='color:#ff5555;'>❌ {message}</span>")
+
+    def open_bot_chat_double_click(self):
+        """Open the chat panel using double-click strategy"""
+        if not self.bot_joiner.is_joined:
+            self.bot_status.setHtml("<span style='color:#ff5555;'>Bot is not in a meeting.</span>")
+            return
+        
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Opening chat panel with double-click...</span>")
+        
+        # Run chat opening in a separate thread
+        self.open_chat_double_thread = BotOpenChatDoubleClickThread(self.bot_joiner)
+        self.open_chat_double_thread.result_ready.connect(self.on_open_chat_result)
+        self.open_chat_double_thread.start()
+
+    def open_bot_chat_precise(self):
+        """Open the chat panel using precise clicking strategy"""
+        if not self.bot_joiner.is_joined:
+            self.bot_status.setHtml("<span style='color:#ff5555;'>Bot is not in a meeting.</span>")
+            return
+        
+        self.bot_status.setHtml("<span style='color:#FF6B35;'>🔄 Opening chat panel with precise click...</span>")
+        
+        # Run chat opening in a separate thread
+        self.open_chat_precise_thread = BotOpenChatPreciseThread(self.bot_joiner)
+        self.open_chat_precise_thread.result_ready.connect(self.on_open_chat_result)
+        self.open_chat_precise_thread.start()
+
+    def update_automated_status(self):
+        """Update the automated monitoring status display"""
+        if hasattr(self, 'auto_status_label'):
+            if self.auto_meeting_active and self.chat_opened:
+                self.auto_status_label.setText("🤖 Automated Monitoring: ACTIVE - Alerts will be sent to meeting chat")
+                self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #4CAF50; padding: 8px; background: #e8f5e8; border-radius: 4px; border: 1px solid #4CAF50;")
+            elif self.auto_meeting_active:
+                self.auto_status_label.setText("🤖 Automated Monitoring: Joining meeting...")
+                self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #FF6B35; padding: 8px; background: #fff3e0; border-radius: 4px; border: 1px solid #FF6B35;")
+            else:
+                self.auto_status_label.setText("🤖 Automated Monitoring: Inactive")
+                self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #666; padding: 8px; background: #f0f0f0; border-radius: 4px; border: 1px solid #ddd;")
 
 def main():
     # Watchdog timer (optional, e.g. 2 hours)

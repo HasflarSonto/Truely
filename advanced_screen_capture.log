@@ -1,0 +1,709 @@
+2025-07-05 12:43:09,715 INFO ====== WebDriver manager ======
+2025-07-05 12:43:09,893 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 12:43:09,969 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 12:43:10,015 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 12:43:10,985 INFO Started ChromeDriver (PID: 23445)
+2025-07-05 12:44:52,760 INFO Received signal 2, exiting
+2025-07-05 12:44:52,772 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11780cb80>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/12c91ee27f937cf18fb8da6cc7612603
+2025-07-05 12:44:52,773 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11780d990>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/12c91ee27f937cf18fb8da6cc7612603
+2025-07-05 12:44:52,774 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11780dba0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/12c91ee27f937cf18fb8da6cc7612603
+2025-07-05 12:44:52,798 INFO Closed Selenium driver
+2025-07-05 12:44:52,798 WARNING Failed to kill child PID 23445: [Errno 3] No such process
+2025-07-05 12:45:22,225 INFO ====== WebDriver manager ======
+2025-07-05 12:45:22,401 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 12:45:22,467 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 12:45:22,510 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 12:45:23,436 INFO Started ChromeDriver (PID: 23640)
+2025-07-05 12:47:33,161 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b47f730>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4ffa5a41e44e400dfae6b8bc4d86bffa
+2025-07-05 12:47:33,162 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b47c040>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4ffa5a41e44e400dfae6b8bc4d86bffa
+2025-07-05 12:47:33,162 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b47f160>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4ffa5a41e44e400dfae6b8bc4d86bffa
+2025-07-05 12:47:33,164 INFO Closed Selenium driver
+2025-07-05 12:47:33,164 WARNING Failed to kill child PID 23640: [Errno 3] No such process
+2025-07-05 13:05:28,963 INFO ====== WebDriver manager ======
+2025-07-05 13:05:29,126 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:05:29,208 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:05:29,243 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 13:05:30,016 INFO Started ChromeDriver (PID: 24947)
+2025-07-05 13:09:12,302 INFO Received signal 2, exiting
+2025-07-05 13:09:12,310 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12d598340>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0f47a71cd280f060055f6012e760cdf4
+2025-07-05 13:09:12,310 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12d59b1f0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0f47a71cd280f060055f6012e760cdf4
+2025-07-05 13:09:12,311 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12d59beb0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0f47a71cd280f060055f6012e760cdf4
+2025-07-05 13:09:12,313 INFO Closed Selenium driver
+2025-07-05 13:09:12,313 WARNING Failed to kill child PID 24947: [Errno 3] No such process
+2025-07-05 13:10:03,134 INFO ====== WebDriver manager ======
+2025-07-05 13:10:03,308 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:10:03,381 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:10:03,437 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 13:10:04,334 INFO Started ChromeDriver (PID: 25247)
+2025-07-05 13:11:04,829 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:11:05,337 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:11:06,356 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:11:06,869 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:11:07,583 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:16:11,549 INFO ====== WebDriver manager ======
+2025-07-05 13:16:11,713 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:16:11,783 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:16:11,840 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 13:16:12,655 INFO Started ChromeDriver (PID: 25613)
+2025-07-05 13:19:55,766 INFO ====== WebDriver manager ======
+2025-07-05 13:19:55,891 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:19:55,948 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:19:56,002 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 13:19:56,863 INFO Started ChromeDriver (PID: 25840)
+2025-07-05 13:20:09,606 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:21,607 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:22,137 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:28,625 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:29,468 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:30,285 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:35,097 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:43,887 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:46,449 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:20:48,482 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 13:21:08,107 INFO Received signal 2, exiting
+2025-07-05 13:21:08,112 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11836e140>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/2d3515c191387453d5cc9b7f7852a5c1
+2025-07-05 13:21:08,113 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1387fc370>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/2d3515c191387453d5cc9b7f7852a5c1
+2025-07-05 13:21:08,113 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1387fc4c0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/2d3515c191387453d5cc9b7f7852a5c1
+2025-07-05 13:21:08,115 INFO Closed Selenium driver
+2025-07-05 13:21:08,115 WARNING Failed to kill child PID 25840: [Errno 3] No such process
+2025-07-05 13:26:10,210 INFO ====== WebDriver manager ======
+2025-07-05 13:26:10,603 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:26:10,677 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 13:26:10,740 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 13:26:11,630 INFO Started ChromeDriver (PID: 26119)
+2025-07-05 14:30:49,140 INFO Closed Selenium driver
+2025-07-05 14:30:49,140 WARNING Failed to kill child PID 26119: [Errno 3] No such process
+2025-07-05 14:31:14,115 INFO ====== WebDriver manager ======
+2025-07-05 14:31:14,282 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:31:14,360 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:31:14,415 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 14:31:15,321 INFO Started ChromeDriver (PID: 26312)
+2025-07-05 14:32:45,369 INFO ====== WebDriver manager ======
+2025-07-05 14:32:45,510 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:32:45,585 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:32:45,618 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 14:32:46,378 INFO Started ChromeDriver (PID: 26421)
+2025-07-05 14:34:53,791 INFO ====== WebDriver manager ======
+2025-07-05 14:34:53,943 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:34:54,002 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 14:34:54,062 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 14:34:54,817 INFO Started ChromeDriver (PID: 26540)
+2025-07-05 14:59:27,209 INFO Received signal 2, exiting
+2025-07-05 14:59:27,217 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x116f9b9a0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b2f51667a960fc5dc0249283f59ab8b1
+2025-07-05 14:59:27,217 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x128230ee0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b2f51667a960fc5dc0249283f59ab8b1
+2025-07-05 14:59:27,218 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x116e55300>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b2f51667a960fc5dc0249283f59ab8b1
+2025-07-05 14:59:27,219 INFO Closed Selenium driver
+2025-07-05 14:59:27,219 WARNING Failed to kill child PID 26312: [Errno 3] No such process
+2025-07-05 14:59:27,219 WARNING Failed to kill child PID 26421: [Errno 3] No such process
+2025-07-05 14:59:27,219 WARNING Failed to kill child PID 26540: [Errno 3] No such process
+2025-07-05 14:59:32,801 INFO Received signal 2, exiting
+2025-07-05 15:00:05,505 INFO ====== WebDriver manager ======
+2025-07-05 15:00:05,633 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:00:05,692 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:00:05,759 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:00:06,580 INFO Started ChromeDriver (PID: 26927)
+2025-07-05 15:00:16,871 INFO ====== WebDriver manager ======
+2025-07-05 15:00:16,999 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:00:17,304 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:00:17,371 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:00:18,005 INFO Started ChromeDriver (PID: 26964)
+2025-07-05 15:00:51,933 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:10:54,317 INFO ====== WebDriver manager ======
+2025-07-05 15:10:54,453 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:10:54,516 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:10:54,574 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:10:55,414 INFO Started ChromeDriver (PID: 27322)
+2025-07-05 15:12:02,973 INFO Closed Selenium driver
+2025-07-05 15:12:02,974 WARNING Failed to kill child PID 27322: [Errno 3] No such process
+2025-07-05 15:12:52,395 INFO ====== WebDriver manager ======
+2025-07-05 15:12:52,563 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:12:52,636 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:12:52,681 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:12:53,520 INFO Started ChromeDriver (PID: 27449)
+2025-07-05 15:13:54,403 INFO Closed Selenium driver
+2025-07-05 15:13:54,404 WARNING Failed to kill child PID 27449: [Errno 3] No such process
+2025-07-05 15:14:30,352 INFO ====== WebDriver manager ======
+2025-07-05 15:14:30,524 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:14:30,602 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:14:30,654 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:14:31,520 INFO Started ChromeDriver (PID: 27558)
+2025-07-05 15:23:56,700 INFO Received signal 2, exiting
+2025-07-05 15:23:56,722 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x116f80640>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/7b76a978d8ba4a280920ebeecb70e245
+2025-07-05 15:23:56,723 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x116f839d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/7b76a978d8ba4a280920ebeecb70e245
+2025-07-05 15:23:56,725 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x116f83b20>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/7b76a978d8ba4a280920ebeecb70e245
+2025-07-05 15:23:56,730 INFO Closed Selenium driver
+2025-07-05 15:23:56,730 WARNING Failed to kill child PID 27558: [Errno 3] No such process
+2025-07-05 15:24:30,031 INFO ====== WebDriver manager ======
+2025-07-05 15:24:30,210 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:24:30,294 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:24:30,337 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:24:31,272 INFO Started ChromeDriver (PID: 27847)
+2025-07-05 15:27:51,265 INFO ====== WebDriver manager ======
+2025-07-05 15:27:51,421 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:27:51,500 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:27:51,543 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:27:52,286 INFO Started ChromeDriver (PID: 28008)
+2025-07-05 15:29:49,303 INFO Received signal 2, exiting
+2025-07-05 15:29:49,316 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1144e01f0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/df0e8a0f68c43a98570ffe5373f32e2f
+2025-07-05 15:29:49,323 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1144e2cb0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/df0e8a0f68c43a98570ffe5373f32e2f
+2025-07-05 15:29:49,324 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1144e2e00>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/df0e8a0f68c43a98570ffe5373f32e2f
+2025-07-05 15:29:49,328 INFO Closed Selenium driver
+2025-07-05 15:29:49,328 WARNING Failed to kill child PID 28008: [Errno 3] No such process
+2025-07-05 15:30:16,221 INFO ====== WebDriver manager ======
+2025-07-05 15:30:16,359 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:30:16,427 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:30:16,493 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:30:17,357 INFO Started ChromeDriver (PID: 28173)
+2025-07-05 15:40:48,642 INFO Received signal 2, exiting
+2025-07-05 15:40:48,649 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x130e5ce20>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/10ff2b8358004e3c53f5b9be21311fbb
+2025-07-05 15:40:48,650 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15b724670>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/10ff2b8358004e3c53f5b9be21311fbb
+2025-07-05 15:40:48,650 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15b7247c0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/10ff2b8358004e3c53f5b9be21311fbb
+2025-07-05 15:40:48,652 INFO Closed Selenium driver
+2025-07-05 15:40:48,652 WARNING Failed to kill child PID 28173: [Errno 3] No such process
+2025-07-05 15:47:36,183 INFO ====== WebDriver manager ======
+2025-07-05 15:47:36,364 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:47:36,458 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:47:36,509 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:47:37,366 INFO Started ChromeDriver (PID: 28707)
+2025-07-05 15:47:56,383 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:49:52,802 INFO Received signal 2, exiting
+2025-07-05 15:49:52,838 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12b8c5090>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/68fb173ad205abbd314eb3a7c1b17a39
+2025-07-05 15:49:52,841 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12b8c6e60>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/68fb173ad205abbd314eb3a7c1b17a39
+2025-07-05 15:49:52,846 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12b8c6fb0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/68fb173ad205abbd314eb3a7c1b17a39
+2025-07-05 15:49:52,861 INFO Closed Selenium driver
+2025-07-05 15:49:52,861 WARNING Failed to kill child PID 28707: [Errno 3] No such process
+2025-07-05 15:50:31,150 INFO ====== WebDriver manager ======
+2025-07-05 15:50:31,284 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:50:31,372 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:50:31,478 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:50:32,280 INFO Started ChromeDriver (PID: 28897)
+2025-07-05 15:52:16,146 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:52:16,746 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:52:19,206 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:52:19,209 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:52:19,718 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 15:52:25,835 INFO Closed Selenium driver
+2025-07-05 15:52:25,836 WARNING Failed to kill child PID 28897: [Errno 3] No such process
+2025-07-05 15:52:37,848 INFO ====== WebDriver manager ======
+2025-07-05 15:52:37,984 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:52:38,052 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:52:38,107 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:52:38,806 INFO Started ChromeDriver (PID: 29049)
+2025-07-05 15:55:36,829 INFO Closed Selenium driver
+2025-07-05 15:55:36,829 WARNING Failed to kill child PID 29049: [Errno 3] No such process
+2025-07-05 15:55:58,545 INFO ====== WebDriver manager ======
+2025-07-05 15:55:58,719 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:55:58,787 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 15:55:58,834 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 15:55:59,610 INFO Started ChromeDriver (PID: 29198)
+2025-07-05 15:59:16,516 INFO Closed Selenium driver
+2025-07-05 15:59:16,517 WARNING Failed to kill child PID 29198: [Errno 3] No such process
+2025-07-05 16:01:13,196 INFO ====== WebDriver manager ======
+2025-07-05 16:01:13,377 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:01:13,449 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:01:13,480 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:01:14,355 INFO Started ChromeDriver (PID: 29418)
+2025-07-05 16:01:35,787 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:44,787 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:44,791 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:45,306 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:45,811 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:47,843 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:48,351 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:48,860 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:48,864 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:49,871 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:50,384 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:50,388 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:50,895 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:51,406 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:52,925 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:53,434 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:01:54,237 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:10,987 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:20,010 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:20,013 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:20,527 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:21,041 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:21,551 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:22,059 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:22,570 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:23,080 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:23,589 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:24,098 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:24,608 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:25,118 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:25,626 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:27,146 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:28,162 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:28,670 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:29,179 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:29,690 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:30,198 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:30,705 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:31,223 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:36,818 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:37,329 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:38,351 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:40,402 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:40,930 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:41,443 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:41,951 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:42,479 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:43,000 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:43,508 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:44,017 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:44,539 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:45,065 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:45,577 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:46,129 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:46,642 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:47,672 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:48,739 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:03:49,869 INFO Closed Selenium driver
+2025-07-05 16:03:49,870 WARNING Failed to kill child PID 29418: [Errno 3] No such process
+2025-07-05 16:04:10,201 INFO ====== WebDriver manager ======
+2025-07-05 16:04:10,383 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:04:10,458 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:04:10,516 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:04:11,403 INFO Started ChromeDriver (PID: 29628)
+2025-07-05 16:04:32,139 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:04:32,646 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:04:33,430 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:04:34,761 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:05:38,073 INFO ====== WebDriver manager ======
+2025-07-05 16:05:38,212 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:05:38,282 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:05:38,343 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:05:39,113 INFO Started ChromeDriver (PID: 29765)
+2025-07-05 16:09:18,257 INFO Received signal 2, exiting
+2025-07-05 16:09:18,266 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1311e2200>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/aaa1255f1c73a8b03489f65fcd00a4c6
+2025-07-05 16:09:18,267 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x151599570>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/aaa1255f1c73a8b03489f65fcd00a4c6
+2025-07-05 16:09:18,268 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1515996c0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/aaa1255f1c73a8b03489f65fcd00a4c6
+2025-07-05 16:09:18,271 INFO Closed Selenium driver
+2025-07-05 16:09:18,271 WARNING Failed to kill child PID 29765: [Errno 3] No such process
+2025-07-05 16:09:31,116 INFO ====== WebDriver manager ======
+2025-07-05 16:09:31,257 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:09:31,328 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:09:31,389 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:09:32,291 INFO Started ChromeDriver (PID: 29979)
+2025-07-05 16:09:46,614 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:49,169 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:49,685 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:50,028 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:53,087 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:53,605 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:09:54,122 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:11:11,203 INFO Received signal 2, exiting
+2025-07-05 16:11:11,212 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11dc85de0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/45e72659f0729330f800df8fe7cd7c40
+2025-07-05 16:11:11,213 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11dc87b20>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/45e72659f0729330f800df8fe7cd7c40
+2025-07-05 16:11:11,214 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11dc87c70>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/45e72659f0729330f800df8fe7cd7c40
+2025-07-05 16:11:11,216 INFO Closed Selenium driver
+2025-07-05 16:11:11,216 WARNING Failed to kill child PID 29979: [Errno 3] No such process
+2025-07-05 16:11:27,602 INFO ====== WebDriver manager ======
+2025-07-05 16:11:27,740 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:11:27,839 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:11:27,890 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:11:28,716 INFO Started ChromeDriver (PID: 30185)
+2025-07-05 16:11:47,376 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:13:36,193 INFO Received signal 2, exiting
+2025-07-05 16:13:36,201 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1132317e0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/dec8918ebef3a17d75e41942ab03fa58
+2025-07-05 16:13:36,201 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x13512c970>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/dec8918ebef3a17d75e41942ab03fa58
+2025-07-05 16:13:36,202 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x13512cac0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/dec8918ebef3a17d75e41942ab03fa58
+2025-07-05 16:13:36,204 INFO Closed Selenium driver
+2025-07-05 16:13:36,204 WARNING Failed to kill child PID 30185: [Errno 3] No such process
+2025-07-05 16:13:55,206 INFO ====== WebDriver manager ======
+2025-07-05 16:13:55,384 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:13:55,475 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:13:55,519 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:13:56,443 INFO Started ChromeDriver (PID: 30344)
+2025-07-05 16:16:20,380 INFO Closed Selenium driver
+2025-07-05 16:16:20,380 WARNING Failed to kill child PID 30344: [Errno 3] No such process
+2025-07-05 16:16:30,667 INFO ====== WebDriver manager ======
+2025-07-05 16:16:30,802 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:16:30,879 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:16:30,960 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:16:31,817 INFO Started ChromeDriver (PID: 30492)
+2025-07-05 16:19:41,170 INFO Received signal 2, exiting
+2025-07-05 16:19:41,179 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x114327d90>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/3f0762a5f9f14129224fb90a4a16828e
+2025-07-05 16:19:41,180 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11436e620>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/3f0762a5f9f14129224fb90a4a16828e
+2025-07-05 16:19:41,180 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11436e770>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/3f0762a5f9f14129224fb90a4a16828e
+2025-07-05 16:19:41,182 INFO Closed Selenium driver
+2025-07-05 16:19:41,182 WARNING Failed to kill child PID 30492: [Errno 3] No such process
+2025-07-05 16:19:48,823 INFO ====== WebDriver manager ======
+2025-07-05 16:19:48,968 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:19:49,504 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:19:49,590 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:19:50,520 INFO Started ChromeDriver (PID: 30667)
+2025-07-05 16:20:18,398 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:20:26,772 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:20:27,821 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:02,301 INFO Closed Selenium driver
+2025-07-05 16:22:02,301 WARNING Failed to kill child PID 30667: [Errno 3] No such process
+2025-07-05 16:22:10,140 INFO ====== WebDriver manager ======
+2025-07-05 16:22:10,307 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:22:10,373 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:22:10,432 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:22:11,196 INFO Started ChromeDriver (PID: 30832)
+2025-07-05 16:22:49,993 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:51,067 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:57,092 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:57,096 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:58,140 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:58,144 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:22:58,658 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:00,183 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:00,704 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:02,085 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:02,089 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:03,123 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:03,126 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:04,149 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:04,663 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:05,705 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:05,710 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:06,228 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:06,738 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:07,754 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:08,270 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:11,836 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:12,344 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:19,471 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:19,978 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:20,492 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:21,506 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:22,024 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:22,544 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:24,584 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:23:25,100 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:27:29,811 INFO Received signal 2, exiting
+2025-07-05 16:27:29,919 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12455cbb0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4fbea092603840464ba58b02621db86f
+2025-07-05 16:27:29,920 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12455eb30>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4fbea092603840464ba58b02621db86f
+2025-07-05 16:27:29,921 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12455ec80>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4fbea092603840464ba58b02621db86f
+2025-07-05 16:27:29,929 INFO Closed Selenium driver
+2025-07-05 16:27:29,929 WARNING Failed to kill child PID 30832: [Errno 3] No such process
+2025-07-05 16:27:59,998 INFO ====== WebDriver manager ======
+2025-07-05 16:28:00,142 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:28:00,225 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:28:00,276 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:28:01,203 INFO Started ChromeDriver (PID: 31077)
+2025-07-05 16:28:20,704 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:30:57,806 INFO Received signal 2, exiting
+2025-07-05 16:30:57,846 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11bfc0310>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/e391f7bac2b190564d243eb542270afd
+2025-07-05 16:30:57,847 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11bfc06a0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/e391f7bac2b190564d243eb542270afd
+2025-07-05 16:30:57,849 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11bfc2da0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/e391f7bac2b190564d243eb542270afd
+2025-07-05 16:30:57,855 INFO Closed Selenium driver
+2025-07-05 16:30:57,856 WARNING Failed to kill child PID 31077: [Errno 3] No such process
+2025-07-05 16:31:15,579 INFO ====== WebDriver manager ======
+2025-07-05 16:31:15,757 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:31:15,828 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:31:15,862 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:31:16,805 INFO Started ChromeDriver (PID: 31315)
+2025-07-05 16:32:51,802 INFO Received signal 2, exiting
+2025-07-05 16:32:51,810 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b1c4430>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a857168beee9ecc9407d9d65e7c9e6a5
+2025-07-05 16:32:51,811 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b1c6f80>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a857168beee9ecc9407d9d65e7c9e6a5
+2025-07-05 16:32:51,812 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11b1c70d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a857168beee9ecc9407d9d65e7c9e6a5
+2025-07-05 16:32:51,814 INFO Closed Selenium driver
+2025-07-05 16:32:51,814 WARNING Failed to kill child PID 31315: [Errno 3] No such process
+2025-07-05 16:33:01,068 INFO ====== WebDriver manager ======
+2025-07-05 16:33:01,244 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:33:01,328 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:33:01,373 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:33:02,259 INFO Started ChromeDriver (PID: 31463)
+2025-07-05 16:33:16,197 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:33:50,674 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:33:51,390 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:37:46,787 INFO Received signal 2, exiting
+2025-07-05 16:37:46,796 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1198e1150>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a47938042be9ceb21458ff826da07dba
+2025-07-05 16:37:46,797 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1198e34c0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a47938042be9ceb21458ff826da07dba
+2025-07-05 16:37:46,797 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1198e3610>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/a47938042be9ceb21458ff826da07dba
+2025-07-05 16:37:46,800 INFO Closed Selenium driver
+2025-07-05 16:37:46,800 WARNING Failed to kill child PID 31463: [Errno 3] No such process
+2025-07-05 16:37:56,150 INFO ====== WebDriver manager ======
+2025-07-05 16:37:56,287 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:37:56,355 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:37:56,394 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:37:57,192 INFO Started ChromeDriver (PID: 31763)
+2025-07-05 16:38:25,182 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 16:39:52,284 INFO ====== WebDriver manager ======
+2025-07-05 16:39:52,431 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:39:52,520 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:39:52,557 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:39:53,519 INFO Started ChromeDriver (PID: 31904)
+2025-07-05 16:43:04,274 INFO Received signal 2, exiting
+2025-07-05 16:43:04,282 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12a866e30>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/88a75c627b4405796b2bfe5a8c227832
+2025-07-05 16:43:04,283 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12a8f22c0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/88a75c627b4405796b2bfe5a8c227832
+2025-07-05 16:43:04,283 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x12a8f2410>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/88a75c627b4405796b2bfe5a8c227832
+2025-07-05 16:43:04,286 INFO Closed Selenium driver
+2025-07-05 16:43:04,286 WARNING Failed to kill child PID 31904: [Errno 3] No such process
+2025-07-05 16:43:19,147 INFO ====== WebDriver manager ======
+2025-07-05 16:43:19,294 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:43:19,362 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:43:19,419 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:43:20,343 INFO Started ChromeDriver (PID: 32081)
+2025-07-05 16:45:11,975 INFO ====== WebDriver manager ======
+2025-07-05 16:45:12,153 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:45:12,217 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:45:12,274 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:45:13,231 INFO Started ChromeDriver (PID: 32212)
+2025-07-05 16:48:10,556 INFO Closed Selenium driver
+2025-07-05 16:48:10,557 INFO Force killed child process PID: 32081
+2025-07-05 16:48:10,557 WARNING Failed to kill child PID 32212: [Errno 3] No such process
+2025-07-05 16:48:24,995 INFO ====== WebDriver manager ======
+2025-07-05 16:48:25,227 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:48:25,311 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:48:25,356 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:48:26,351 INFO Started ChromeDriver (PID: 32440)
+2025-07-05 16:52:53,297 INFO Received signal 2, exiting
+2025-07-05 16:52:53,308 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x129245300>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/751386fb6609c96b8024ba9ca0033c14
+2025-07-05 16:52:53,309 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x129247940>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/751386fb6609c96b8024ba9ca0033c14
+2025-07-05 16:52:53,309 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x129247a90>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/751386fb6609c96b8024ba9ca0033c14
+2025-07-05 16:52:53,311 INFO Closed Selenium driver
+2025-07-05 16:52:53,311 WARNING Failed to kill child PID 32440: [Errno 3] No such process
+2025-07-05 16:53:04,900 INFO ====== WebDriver manager ======
+2025-07-05 16:53:05,045 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:53:05,135 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:53:05,168 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:53:06,119 INFO Started ChromeDriver (PID: 33178)
+2025-07-05 16:58:44,313 INFO ====== WebDriver manager ======
+2025-07-05 16:58:44,754 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:58:44,840 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:58:44,893 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:58:46,672 INFO Started ChromeDriver (PID: 34478)
+2025-07-05 16:58:48,835 INFO Closed Selenium driver
+2025-07-05 16:58:48,835 WARNING Failed to kill child PID 33178: [Errno 3] No such process
+2025-07-05 16:59:10,958 INFO Closed Selenium driver
+2025-07-05 16:59:10,958 WARNING Failed to kill child PID 34478: [Errno 3] No such process
+2025-07-05 16:59:47,730 INFO ====== WebDriver manager ======
+2025-07-05 16:59:47,915 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:59:47,955 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 16:59:47,995 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 16:59:48,726 INFO Started ChromeDriver (PID: 34596)
+2025-07-05 17:01:43,836 INFO Received signal 2, exiting
+2025-07-05 17:01:43,862 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15145c9d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/82d6a67f6b5aae31ace2fdf246b2df2d
+2025-07-05 17:01:43,863 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15145fc40>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/82d6a67f6b5aae31ace2fdf246b2df2d
+2025-07-05 17:01:43,864 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15145fd90>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/82d6a67f6b5aae31ace2fdf246b2df2d
+2025-07-05 17:01:43,871 INFO Closed Selenium driver
+2025-07-05 17:01:43,871 WARNING Failed to kill child PID 34596: [Errno 3] No such process
+2025-07-05 17:01:52,803 INFO ====== WebDriver manager ======
+2025-07-05 17:01:52,945 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:01:53,010 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:01:53,069 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:01:53,850 INFO Started ChromeDriver (PID: 34750)
+2025-07-05 17:02:18,974 INFO Received signal 2, exiting
+2025-07-05 17:02:18,989 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14577e980>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/1235fc6a061652b776ca7681fc1db0dc
+2025-07-05 17:02:18,990 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15f624f40>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/1235fc6a061652b776ca7681fc1db0dc
+2025-07-05 17:02:18,991 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x15f625090>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/1235fc6a061652b776ca7681fc1db0dc
+2025-07-05 17:02:18,996 INFO Closed Selenium driver
+2025-07-05 17:02:18,996 WARNING Failed to kill child PID 34750: [Errno 3] No such process
+2025-07-05 17:11:48,265 INFO Received signal 2, exiting
+2025-07-05 17:15:25,318 INFO ====== WebDriver manager ======
+2025-07-05 17:15:25,468 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:15:25,542 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:15:25,589 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:15:26,433 INFO Started ChromeDriver (PID: 35574)
+2025-07-05 17:15:43,838 INFO Closed Selenium driver
+2025-07-05 17:15:43,838 WARNING Failed to kill child PID 35574: [Errno 3] No such process
+2025-07-05 17:15:57,984 INFO ====== WebDriver manager ======
+2025-07-05 17:15:58,131 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:15:58,181 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:15:58,246 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:15:58,986 INFO Started ChromeDriver (PID: 35653)
+2025-07-05 17:16:26,154 INFO Closed Selenium driver
+2025-07-05 17:16:26,154 WARNING Failed to kill child PID 35653: [Errno 3] No such process
+2025-07-05 17:17:06,847 INFO ====== WebDriver manager ======
+2025-07-05 17:17:07,001 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:17:07,074 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:17:07,129 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:17:07,894 INFO Started ChromeDriver (PID: 35756)
+2025-07-05 17:18:14,906 INFO ====== WebDriver manager ======
+2025-07-05 17:18:15,056 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:18:15,100 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:18:15,169 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:18:15,945 INFO Started ChromeDriver (PID: 35916)
+2025-07-05 17:19:51,803 INFO Received signal 2, exiting
+2025-07-05 17:19:51,818 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1532b6170>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4556522f312b3ede75a3c9f647a6166d
+2025-07-05 17:19:51,819 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x157df1840>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4556522f312b3ede75a3c9f647a6166d
+2025-07-05 17:19:51,820 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x157df1990>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/4556522f312b3ede75a3c9f647a6166d
+2025-07-05 17:19:51,824 INFO Closed Selenium driver
+2025-07-05 17:19:51,824 WARNING Failed to kill child PID 35756: [Errno 3] No such process
+2025-07-05 17:21:47,864 INFO ====== WebDriver manager ======
+2025-07-05 17:21:48,008 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:21:48,105 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:21:48,136 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:21:48,981 INFO Started ChromeDriver (PID: 36161)
+2025-07-05 17:23:23,849 INFO Closed Selenium driver
+2025-07-05 17:23:23,850 WARNING Failed to kill child PID 36161: [Errno 3] No such process
+2025-07-05 17:23:29,745 INFO ====== WebDriver manager ======
+2025-07-05 17:23:29,908 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:23:29,996 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:23:30,040 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:23:30,870 INFO Started ChromeDriver (PID: 36305)
+2025-07-05 17:27:24,302 INFO Received signal 2, exiting
+2025-07-05 17:27:24,308 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e03ba30>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/ef84fce331e3df5f1449d47e47b5588b
+2025-07-05 17:27:24,309 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e0aa200>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/ef84fce331e3df5f1449d47e47b5588b
+2025-07-05 17:27:24,309 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e0aa350>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/ef84fce331e3df5f1449d47e47b5588b
+2025-07-05 17:27:24,312 INFO Closed Selenium driver
+2025-07-05 17:27:24,312 WARNING Failed to kill child PID 36305: [Errno 3] No such process
+2025-07-05 17:27:30,931 INFO ====== WebDriver manager ======
+2025-07-05 17:27:31,088 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:27:31,154 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:27:31,210 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:27:32,001 INFO Started ChromeDriver (PID: 36480)
+2025-07-05 17:27:56,652 INFO ====== WebDriver manager ======
+2025-07-05 17:27:56,827 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:27:56,873 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:27:56,916 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:27:57,628 INFO Started ChromeDriver (PID: 36532)
+2025-07-05 17:29:37,767 WARNING Connection pool is full, discarding connection: localhost. Connection pool size: 1
+2025-07-05 17:30:37,993 INFO ====== WebDriver manager ======
+2025-07-05 17:30:38,156 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:30:38,250 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:30:38,304 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:30:39,184 INFO Started ChromeDriver (PID: 36733)
+2025-07-05 17:31:19,198 INFO Closed Selenium driver
+2025-07-05 17:31:19,199 WARNING Failed to kill child PID 36733: [Errno 3] No such process
+2025-07-05 17:31:35,895 INFO ====== WebDriver manager ======
+2025-07-05 17:31:36,071 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:31:36,141 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:31:36,187 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:31:36,991 INFO Started ChromeDriver (PID: 36837)
+2025-07-05 17:31:40,884 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec5b0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,885 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ece50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,886 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed000>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,889 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec040>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,890 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed450>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,891 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed660>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,893 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edb40>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,894 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edd50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,894 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edf60>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,896 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee440>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,897 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee650>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,897 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee860>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,899 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eed40>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,900 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee4a0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,900 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eeb00>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,902 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee3b0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,903 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edba0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,904 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee200>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,905 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edab0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,905 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed600>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,906 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed840>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,907 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed390>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,908 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eef50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,909 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ef160>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,910 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ef640>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,911 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec040>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,911 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ef040>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,913 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eeec0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,913 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edb70>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,914 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ed8a0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,915 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec0d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,916 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee470>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,916 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee050>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,917 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edae0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,918 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eebf0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,919 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eeaa0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,920 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee4a0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,920 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ef850>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,921 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256efa60>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,922 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee860>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,923 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eeb60>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:40,923 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eda20>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/element
+2025-07-05 17:31:42,426 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee140>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/elements
+2025-07-05 17:31:42,427 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256edff0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/elements
+2025-07-05 17:31:42,427 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec0d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d/elements
+2025-07-05 17:31:42,706 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ee050>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d
+2025-07-05 17:31:42,706 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256ec850>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d
+2025-07-05 17:31:42,707 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1256eefe0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/84f7c014004cba0e65b530c243f5035d
+2025-07-05 17:31:42,708 INFO Closed Selenium driver
+2025-07-05 17:31:42,708 WARNING Failed to kill child PID 36837: [Errno 3] No such process
+2025-07-05 17:31:49,535 INFO ====== WebDriver manager ======
+2025-07-05 17:31:49,670 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:31:49,722 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:31:49,769 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:31:50,412 INFO Started ChromeDriver (PID: 36890)
+2025-07-05 17:33:35,817 INFO Received signal 2, exiting
+2025-07-05 17:33:35,846 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1351f41f0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b1c29914d2d29f708ed063d64904cab4
+2025-07-05 17:33:35,848 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1351f7310>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b1c29914d2d29f708ed063d64904cab4
+2025-07-05 17:33:35,849 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1351f7460>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/b1c29914d2d29f708ed063d64904cab4
+2025-07-05 17:33:35,853 INFO Closed Selenium driver
+2025-07-05 17:33:35,853 WARNING Failed to kill child PID 36890: [Errno 3] No such process
+2025-07-05 17:33:47,658 INFO ====== WebDriver manager ======
+2025-07-05 17:33:47,819 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:33:47,912 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:33:47,973 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:33:48,788 INFO Started ChromeDriver (PID: 37059)
+2025-07-05 17:37:22,302 INFO Received signal 2, exiting
+2025-07-05 17:37:22,325 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x13dd78340>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/9357401db550c60de5ec29111f93d99d
+2025-07-05 17:37:22,328 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x13dd7b310>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/9357401db550c60de5ec29111f93d99d
+2025-07-05 17:37:22,330 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x13dd7b460>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/9357401db550c60de5ec29111f93d99d
+2025-07-05 17:37:22,337 INFO Closed Selenium driver
+2025-07-05 17:37:22,337 WARNING Failed to kill child PID 37059: [Errno 3] No such process
+2025-07-05 17:37:35,887 INFO ====== WebDriver manager ======
+2025-07-05 17:37:36,033 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:37:36,125 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:37:36,171 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:37:36,928 INFO Started ChromeDriver (PID: 37301)
+2025-07-05 17:39:24,302 INFO Received signal 2, exiting
+2025-07-05 17:39:24,309 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x128f84340>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/f845eb4ef97e8a6ecebf28fed51a18cf
+2025-07-05 17:39:24,310 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x128f87580>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/f845eb4ef97e8a6ecebf28fed51a18cf
+2025-07-05 17:39:24,310 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x128f876d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/f845eb4ef97e8a6ecebf28fed51a18cf
+2025-07-05 17:39:24,312 INFO Closed Selenium driver
+2025-07-05 17:39:24,312 WARNING Failed to kill child PID 37301: [Errno 3] No such process
+2025-07-05 17:39:32,834 INFO ====== WebDriver manager ======
+2025-07-05 17:39:32,982 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:39:33,059 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:39:33,116 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:39:34,025 INFO Started ChromeDriver (PID: 37467)
+2025-07-05 17:40:49,802 INFO Received signal 2, exiting
+2025-07-05 17:40:49,834 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11f774310>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0943a039afeb5b3cfce8bc56955280bb
+2025-07-05 17:40:49,834 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11f777c70>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0943a039afeb5b3cfce8bc56955280bb
+2025-07-05 17:40:49,835 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11f777e50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/0943a039afeb5b3cfce8bc56955280bb
+2025-07-05 17:40:49,841 INFO Closed Selenium driver
+2025-07-05 17:40:49,841 WARNING Failed to kill child PID 37467: [Errno 3] No such process
+2025-07-05 17:41:32,213 INFO ====== WebDriver manager ======
+2025-07-05 17:41:32,371 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:41:32,442 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:41:32,498 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:41:33,363 INFO Started ChromeDriver (PID: 37632)
+2025-07-05 17:43:46,510 INFO Closed Selenium driver
+2025-07-05 17:43:46,511 WARNING Failed to kill child PID 37632: [Errno 3] No such process
+2025-07-05 17:46:52,720 INFO ====== WebDriver manager ======
+2025-07-05 17:46:52,863 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:46:52,931 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:46:52,985 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:46:53,830 INFO Started ChromeDriver (PID: 37815)
+2025-07-05 17:48:43,620 INFO Closed Selenium driver
+2025-07-05 17:48:43,621 WARNING Failed to kill child PID 37815: [Errno 3] No such process
+2025-07-05 17:49:01,241 INFO ====== WebDriver manager ======
+2025-07-05 17:49:01,656 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:49:01,755 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:49:01,815 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:49:02,637 INFO Started ChromeDriver (PID: 37989)
+2025-07-05 17:51:43,302 INFO Received signal 2, exiting
+2025-07-05 17:51:43,333 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x14ffcb0d0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/19f11d0d1615740148e5654a6c583018
+2025-07-05 17:51:43,335 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x150042860>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/19f11d0d1615740148e5654a6c583018
+2025-07-05 17:51:43,337 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x1500429b0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/19f11d0d1615740148e5654a6c583018
+2025-07-05 17:51:43,347 INFO Closed Selenium driver
+2025-07-05 17:51:43,347 WARNING Failed to kill child PID 37989: [Errno 3] No such process
+2025-07-05 17:51:52,996 INFO ====== WebDriver manager ======
+2025-07-05 17:51:53,160 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:51:53,233 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 17:51:53,270 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 17:51:54,045 INFO Started ChromeDriver (PID: 38163)
+2025-07-05 17:53:30,192 INFO Received signal 2, exiting
+2025-07-05 17:53:30,198 WARNING Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e2abca0>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/129ee2ffffc97c4715c0d6a857ab10bc
+2025-07-05 17:53:30,199 WARNING Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e326e00>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/129ee2ffffc97c4715c0d6a857ab10bc
+2025-07-05 17:53:30,199 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x11e326f50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/129ee2ffffc97c4715c0d6a857ab10bc
+2025-07-05 17:53:30,202 INFO Closed Selenium driver
+2025-07-05 17:53:30,202 WARNING Failed to kill child PID 38163: [Errno 3] No such process
+2025-07-05 18:03:42,657 INFO ====== WebDriver manager ======
+2025-07-05 18:03:42,819 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 18:03:42,958 INFO Get LATEST chromedriver version for google-chrome
+2025-07-05 18:03:43,019 INFO Driver [/Users/antonioli/.wdm/drivers/chromedriver/mac64/137.0.7151.119/chromedriver-mac-arm64/chromedriver] found in cache
+2025-07-05 18:03:43,914 INFO Started ChromeDriver (PID: 38504)
+2025-07-05 18:07:05,598 INFO Closed Selenium driver
+2025-07-05 18:07:05,599 WARNING Failed to kill child PID 38504: [Errno 3] No such process
+2025-07-05 18:10:43,803 INFO Received signal 2, exiting
+2025-07-05 18:12:37,802 INFO Received signal 2, exiting
