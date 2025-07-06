@@ -31,3 +31,4 @@
 2025-07-05 18:34:42,818 WARNING Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x138c6ec50>: Failed to establish a new connection: [Errno 61] Connection refused')': /session/fd95c3ba2b1c0fddaf51a95e9da5146e
 2025-07-05 18:34:42,822 INFO Closed Selenium driver
 2025-07-05 18:34:42,822 WARNING Failed to kill child PID 46645: [Errno 3] No such process
+2025-07-05 18:47:25,802 INFO Received signal 2, exiting
