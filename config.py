@@ -1,4 +1,6 @@
-ZOOM_URL = "https://us05web.zoom.us/j/82064199294?pwd=D9HvHXiGAawNrCwdvhffnbo3kRKARl.1"
+ZOOM_URL = "https://us05web.zoom.us/j/85273692745?pwd=TlbWNNgCltPu4tpdTn6Ven3tLMbsrb.1"
 APPS = ["cluely", "claude"]
 START_KEY = "HIHIHI"
 END_KEY = "BYEBYE"
+CHAT_MONITORING_ENABLED = True  # Set to False to disable chat monitoring and reduce CPU usage
+STATUS_UPDATE_INTERVAL = 10  # seconds between periodic status updates when suspicious processes are detected

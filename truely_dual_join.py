@@ -14,7 +14,7 @@ import atexit
 from datetime import datetime
 from typing import List
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QTextEdit, QListWidget, QListWidgetItem, QInputDialog, QMessageBox, QSystemTrayIcon, QMenu, QTabWidget, QGroupBox, QGridLayout, QCheckBox
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QTextEdit, QListWidget, QListWidgetItem, QInputDialog, QMessageBox, QSystemTrayIcon, QMenu, QTabWidget, QGroupBox, QGridLayout, QCheckBox, QFrame
 )
 from PyQt6.QtCore import Qt, QTimer, QRect, QThread, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QAction
@@ -27,13 +27,15 @@ import platform
 
 # Import config
 try:
-    from config import ZOOM_URL, APPS, START_KEY, END_KEY
+    from config import ZOOM_URL, APPS, START_KEY, END_KEY, CHAT_MONITORING_ENABLED, STATUS_UPDATE_INTERVAL
 except ImportError:
     print("Warning: config.py not found. Using default values.")
     ZOOM_URL = ""
     APPS = ["cluely", "claude"]
     START_KEY = ""
     END_KEY = ""
+    CHAT_MONITORING_ENABLED = True  # Default to enabled
+    STATUS_UPDATE_INTERVAL = 10  # Default to 10 seconds
 
 # Auto-install Selenium if not available
 def install_selenium_if_needed():
@@ -814,35 +816,25 @@ class ChatMonitorThread(QThread):
                             self.shutdown_requested.emit()
                             break
                 
-                # Sleep for 3 seconds before next check (reduced from 5)
-                time.sleep(3)
+                # Sleep for 15 seconds before next check (increased from 3 for better performance)
+                time.sleep(15)
             except Exception as e:
                 print(f"Error in chat monitoring: {e}")
-                time.sleep(3)
+                time.sleep(15)
     
     def check_for_shutdown_command(self):
-        """Check if 'Truely End' command has been sent in chat"""
+        """Check if 'Truely End' command has been sent in chat - optimized for performance"""
         try:
             if not self.bot_joiner.driver:
                 return False
             
-            # Debug: Print current page source to help understand Zoom's structure
-            if not hasattr(self, '_debug_printed'):
-                print("=== DEBUG: Checking Zoom chat structure ===")
-                try:
-                    # Look for any text containing "Truely" to see what's available
-                    all_elements = self.bot_joiner.driver.find_elements(By.XPATH, "//*[contains(text(), 'Truely')]")
-                    print(f"Found {len(all_elements)} elements containing 'Truely'")
-                    for i, elem in enumerate(all_elements[:5]):  # Show first 5
-                        print(f"  Element {i}: '{elem.text.strip()}' (tag: {elem.tag_name}, class: {elem.get_attribute('class')})")
-                except Exception as e:
-                    print(f"Debug failed: {e}")
-                self._debug_printed = True
-            
-            # Strategy 1: Use JavaScript to find all text nodes containing "Truely End"
+            # Use a single, efficient JavaScript strategy instead of multiple fallbacks
             try:
                 js_script = """
-                function findTruelyEndMessages() {
+                // Simple, fast check for 'Truely End' in any text content
+                const textContent = document.body.textContent || '';
+                if (textContent.includes('Truely End')) {
+                    // Find the specific element containing the text
                     const walker = document.createTreeWalker(
                         document.body,
                         NodeFilter.SHOW_TEXT,
@@ -859,137 +851,36 @@ class ChatMonitorThread(QThread):
                             messages.push({
                                 text: text,
                                 tagName: parent.tagName,
-                                className: parent.className,
-                                id: parent.id,
-                                innerHTML: parent.innerHTML.substring(0, 200)
+                                className: parent.className
                             });
                         }
                     }
                     return messages;
                 }
-                return findTruelyEndMessages();
+                return [];
                 """
                 
                 messages = self.bot_joiner.driver.execute_script(js_script)
-                print(f"JavaScript found {len(messages)} elements containing 'Truely End'")
                 
-                for i, msg in enumerate(messages):
-                    print(f"  JS Message {i}: '{msg['text']}' (tag: {msg['tagName']}, class: {msg['className']})")
-                    
+                for msg in messages:
                     if "Truely End" in msg['text']:
-                        # Create a unique hash for this message
-                        message_hash = f"{msg['text']}_{msg['tagName']}_{msg['className']}_{time.time()}"
+                        # Create a simple hash for this message
+                        message_hash = f"{msg['text']}_{msg['tagName']}_{msg['className']}"
                         if message_hash not in self.last_checked_messages:
                             self.last_checked_messages.add(message_hash)
                             
                             # Check if this looks like a user message (not our bot)
                             if not self.is_our_message_js(msg):
-                                print(f"Found shutdown command via JavaScript: '{msg['text']}'")
                                 return True
-                            else:
-                                print(f"Ignoring our own message via JavaScript: '{msg['text']}'")
                 
             except Exception as e:
-                print(f"JavaScript strategy failed: {e}")
-            
-            # Strategy 2: Look for recent messages in chat container
-            try:
-                # Find the chat container first
-                chat_containers = [
-                    "//div[contains(@class, 'chat-container')]",
-                    "//div[contains(@class, 'chat-panel')]",
-                    "//div[contains(@class, 'chat')]",
-                    "//div[contains(@id, 'chat')]"
-                ]
-                
-                chat_container = None
-                for container_selector in chat_containers:
-                    try:
-                        containers = self.bot_joiner.driver.find_elements(By.XPATH, container_selector)
-                        if containers:
-                            chat_container = containers[0]
-                            print(f"Found chat container: {container_selector}")
-                            break
-                    except:
-                        continue
-                
-                if chat_container:
-                    # Look for recent messages within the chat container
-                    recent_messages = chat_container.find_elements(By.XPATH, ".//div[contains(@class, 'message') or contains(@class, 'chat-item')]")
-                    print(f"Found {len(recent_messages)} recent messages in chat container")
-                    
-                    for message in recent_messages[-5:]:  # Check last 5 messages
-                        try:
-                            message_text = message.text.strip()
-                            print(f"  Recent message: '{message_text}'")
-                            
-                            if "Truely End" in message_text:
-                                # Check if this is a new message we haven't seen before
-                                message_hash = f"{message.get_attribute('data-message-id') or message_text}_{time.time()}"
-                                if message_hash not in self.last_checked_messages:
-                                    self.last_checked_messages.add(message_hash)
-                                    
-                                    # Additional check: make sure this isn't our own message
-                                    if not self.is_our_message(message):
-                                        print(f"Found shutdown command in recent message: '{message_text}'")
-                                        return True
-                                    else:
-                                        print(f"Ignoring our own message: '{message_text}'")
-                        except Exception as e:
-                            print(f"Error checking recent message: {e}")
-                            continue
-                
-            except Exception as e:
-                print(f"Strategy 2 failed: {e}")
-            
-            # Strategy 3: Fallback to broader selectors
-            chat_selectors = [
-                # More specific Zoom chat selectors
-                "//div[contains(@class, 'chat-message')]//div[contains(text(), 'Truely End')]",
-                "//div[contains(@class, 'message-content')]//div[contains(text(), 'Truely End')]",
-                "//div[contains(@class, 'chat-item')]//div[contains(text(), 'Truely End')]",
-                "//div[contains(@class, 'message')]//div[contains(text(), 'Truely End')]",
-                "//div[contains(@class, 'chat')]//div[contains(text(), 'Truely End')]",
-                # Broader selectors for different Zoom versions
-                "//div[contains(text(), 'Truely End')]",
-                "//span[contains(text(), 'Truely End')]",
-                "//p[contains(text(), 'Truely End')]",
-                # Look for any element containing the text
-                "//*[contains(text(), 'Truely End')]"
-            ]
-            
-            for selector in chat_selectors:
-                try:
-                    elements = self.bot_joiner.driver.find_elements(By.XPATH, selector)
-                    print(f"Selector '{selector}' found {len(elements)} elements")
-                    
-                    for element in elements:
-                        message_text = element.text.strip()
-                        print(f"  Checking element: '{message_text}'")
-                        
-                        if "Truely End" in message_text:
-                            # Check if this is a new message we haven't seen before
-                            message_hash = f"{element.get_attribute('data-message-id') or element.text}_{time.time()}"
-                            if message_hash not in self.last_checked_messages:
-                                self.last_checked_messages.add(message_hash)
-                                # Keep only last 100 messages to prevent memory bloat
-                                if len(self.last_checked_messages) > 100:
-                                    self.last_checked_messages.clear()
-                                
-                                # Additional check: make sure this isn't our own message
-                                if not self.is_our_message(element):
-                                    print(f"Found shutdown command in message: '{message_text}'")
-                                    return True
-                                else:
-                                    print(f"Ignoring our own message: '{message_text}'")
-                except Exception as e:
-                    print(f"Selector {selector} failed: {e}")
-                    continue
+                # Silent fail - don't print errors to reduce console spam
+                pass
             
             return False
             
         except Exception as e:
-            print(f"Error checking for shutdown command: {e}")
+            # Silent fail - don't print errors to reduce console spam
             return False
     
     def is_our_message(self, element):
@@ -1023,7 +914,7 @@ class ChatMonitorThread(QThread):
 class ProcessMonitorApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Truely - Dual-Join Process Monitor")
+        self.setWindowTitle("Truely")
         self.setGeometry(100, 100, 500, 600)
         self.process_names = APPS  # Use apps from config instead of hardcoded list
         # Known suspicious executable paths
@@ -1043,6 +934,12 @@ class ProcessMonitorApp(QMainWindow):
         
         # Chat monitoring for shutdown command
         self.chat_monitor_thread = None
+        
+        # Periodic status update variables
+        self.status_update_timer = None
+        self.last_status_update_time = 0
+        self.status_update_interval = STATUS_UPDATE_INTERVAL  # seconds between status updates
+        self.current_suspicious_processes = []  # Track current suspicious processes
         
         self.init_ui()
         self.init_tray_icon()
@@ -1158,6 +1055,11 @@ class ProcessMonitorApp(QMainWindow):
     def start_chat_monitoring(self):
         """Start monitoring chat messages for shutdown command"""
         try:
+            # Check if chat monitoring is enabled in config
+            if not CHAT_MONITORING_ENABLED:
+                self.log_message("Chat monitoring disabled in config - skipping")
+                return
+                
             if self.chat_monitor_thread is None or not self.chat_monitor_thread.isRunning():
                 self.chat_monitor_thread = ChatMonitorThread(self.bot_joiner)
                 self.chat_monitor_thread.shutdown_requested.connect(self.shutdown_from_chat)
@@ -1222,62 +1124,81 @@ class ProcessMonitorApp(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
-        layout.setSpacing(10)
-        layout.setContentsMargins(12, 10, 12, 10)
+        layout.setSpacing(14)
+        layout.setContentsMargins(18, 16, 18, 16)
 
         # Title
-        title = QLabel("Truely - Dual-Join Process Monitor")
-        title.setStyleSheet("font-size: 16px; font-weight: bold; margin-bottom: 4px;")
+        title = QLabel("Truely")
+        title.setStyleSheet("font-size: 34px; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
 
         # Automated monitoring status
         self.auto_status_label = QLabel("🤖 Automated Monitoring: Inactive")
-        self.auto_status_label.setStyleSheet("font-size: 12px; font-weight: bold; color: #666; padding: 8px; background: #f0f0f0; border-radius: 4px; border: 1px solid #ddd;")
+        self.auto_status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #666; padding: 10px; background: #f0f4fa; border-radius: 8px; border: 1.5px solid #b3c6e0; margin-bottom: 8px;")
         layout.addWidget(self.auto_status_label)
 
-        # Instructions
+        # --- Separator ---
+        sep1 = QFrame()
+        sep1.setFrameShape(QFrame.Shape.HLine)
+        sep1.setFrameShadow(QFrame.Shadow.Sunken)
+        sep1.setStyleSheet("color: #b3c6e0; background: #b3c6e0; min-height: 2px; max-height: 2px; margin: 6px 0 4px 0;")
+        layout.addWidget(sep1)
+
+        # Section title: Processes being monitored
         instructions = QLabel("Processes being monitored:")
-        instructions.setStyleSheet("font-size: 11px; margin-bottom: 2px;")
+        instructions.setStyleSheet("font-size: 18px; font-weight: bold; margin-bottom: 4px; margin-top: 0px;")
         layout.addWidget(instructions)
 
-        # List of process names
-        self.process_list = QListWidget()
-        self.process_list.addItems(self.process_names)
-        self.process_list.setStyleSheet("font-size: 11px;")
-        self.process_list.setEditTriggers(QListWidget.EditTrigger.NoEditTriggers)
-        self.process_list.setSelectionMode(QListWidget.SelectionMode.NoSelection)
-        layout.addWidget(self.process_list)
+        # Custom process pill display (smaller pills)
+        process_pill_widget = QWidget()
+        pill_layout = QHBoxLayout(process_pill_widget)
+        pill_layout.setSpacing(10)
+        pill_layout.setContentsMargins(0, 0, 0, 0)
+        for app in self.process_names:
+            pill = QLabel(app)
+            pill.setStyleSheet(
+                "font-size: 15px; font-weight: bold; color: #2563eb; "
+                "background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #e0eaff, stop:1 #b3c6ff); "
+                "border-radius: 14px; padding: 6px 18px; margin: 2px; "
+                "border: 2px solid #b3c6ff; letter-spacing: 1px;"
+            )
+            pill.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            pill_layout.addWidget(pill)
+        pill_layout.addStretch(1)
+        layout.addWidget(process_pill_widget)
 
-        # Suspicious process area
+        # --- Separator ---
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.Shape.HLine)
+        sep2.setFrameShadow(QFrame.Shadow.Sunken)
+        sep2.setStyleSheet("color: #b3c6e0; background: #b3c6e0; min-height: 2px; max-height: 2px; margin: 6px 0 4px 0;")
+        layout.addWidget(sep2)
+
+        # Section title: Suspicious Processes
         suspicious_label = QLabel("Suspicious Processes:")
-        suspicious_label.setStyleSheet("font-size: 12px; font-weight: bold; margin-top: 8px;")
+        suspicious_label.setStyleSheet("font-size: 18px; font-weight: bold; margin-top: 0px; margin-bottom: 4px;")
         layout.addWidget(suspicious_label)
         self.suspicious_text = QTextEdit()
         self.suspicious_text.setReadOnly(True)
-        self.suspicious_text.setStyleSheet("background: #3a3f4b; color: #ffb347; font-family: monospace; font-size: 11px; border-radius: 4px; padding: 4px;")
+        self.suspicious_text.setStyleSheet("background: #3a3f4b; color: #ffb347; font-family: monospace; font-size: 12px; border-radius: 6px; padding: 8px; border: 1.5px solid #23272e;")
         layout.addWidget(self.suspicious_text)
 
-        # Status/log area
+        # --- Separator ---
+        sep3 = QFrame()
+        sep3.setFrameShape(QFrame.Shape.HLine)
+        sep3.setFrameShadow(QFrame.Shadow.Sunken)
+        sep3.setStyleSheet("color: #b3c6e0; background: #b3c6e0; min-height: 2px; max-height: 2px; margin: 6px 0 4px 0;")
+        layout.addWidget(sep3)
+
+        # Section title: Status Log
         status_label = QLabel("Status Log:")
-        status_label.setStyleSheet("font-size: 12px; font-weight: bold; margin-top: 8px;")
+        status_label.setStyleSheet("font-size: 18px; font-weight: bold; margin-top: 0px; margin-bottom: 4px;")
         layout.addWidget(status_label)
         self.log_text = QTextEdit()
         self.log_text.setReadOnly(True)
-        self.log_text.setStyleSheet("background: #23272e; color: #e0e0e0; font-family: monospace; font-size: 11px; border-radius: 4px; padding: 4px;")
+        self.log_text.setStyleSheet("background: #23272e; color: #e0e0e0; font-family: monospace; font-size: 12px; border-radius: 6px; padding: 8px; border: 1.5px solid #23272e;")
         layout.addWidget(self.log_text)
-
-        # Manual check button
-        self.check_btn = QPushButton("Check Now")
-        self.check_btn.setStyleSheet("margin-top: 8px; padding: 6px 16px; font-size: 12px; font-weight: bold;")
-        self.check_btn.clicked.connect(self.check_processes)
-        layout.addWidget(self.check_btn, alignment=Qt.AlignmentFlag.AlignCenter)
-
-        # Test chat monitoring button (for debugging)
-        self.test_chat_btn = QPushButton("Test Chat Monitoring")
-        self.test_chat_btn.setStyleSheet("margin-top: 4px; padding: 6px 16px; font-size: 12px; font-weight: bold; background: #FF6B35; color: white;")
-        self.test_chat_btn.clicked.connect(self.test_chat_monitoring)
-        layout.addWidget(self.test_chat_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def init_tray_icon(self):
         # Normal icon: circle with a capital T, Columbia blue background
@@ -1357,22 +1278,27 @@ class ProcessMonitorApp(QMainWindow):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title)
         
-        # Alert message
-        self.alert_message = QLabel("A suspicious process has been detected on your system!")
+        # Alert message (longer and more informative)
+        self.alert_message = QLabel(
+            "A suspicious process has been detected on your system!\n\n"
+            "This may indicate the presence of unauthorized or potentially harmful software running in the background. "
+            "Please review your running applications and ensure that all processes are legitimate. "
+            "If you are unsure about a process, consider searching for more information or contacting your system administrator."
+        )
         self.alert_message.setStyleSheet("font-size: 14px; margin: 10px;")
         self.alert_message.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.alert_message.setWordWrap(True)
         layout.addWidget(self.alert_message)
         
-        # Dismiss button - now sends SIGINT for graceful shutdown
-        dismiss_btn = QPushButton("Dismiss Alert & Shutdown")
+        # Dismiss button - only hides the alert window
+        dismiss_btn = QPushButton("Dismiss Alert")
         dismiss_btn.setStyleSheet("padding: 8px 16px; font-size: 12px; background: #cc0000; color: white; border: none; border-radius: 4px;")
-        dismiss_btn.clicked.connect(self.shutdown_from_popup)
+        dismiss_btn.clicked.connect(self.hide_alert_window)
         layout.addWidget(dismiss_btn, alignment=Qt.AlignmentFlag.AlignCenter)
         
         # Position window
         screen = QApplication.primaryScreen().geometry()
-        self.alert_window.setGeometry(screen.width() - 400, 50, 380, 200)  # Made taller (150 -> 200)
+        self.alert_window.setGeometry(screen.width() - 400, 50, 380, 270)  # Increased height from 220 to 270
 
     def pulse_alert(self):
         """Pulse the alert window to draw attention"""
@@ -1416,6 +1342,9 @@ class ProcessMonitorApp(QMainWindow):
     def handle_suspicious_result(self, suspicious, new_alerted_pids):
         # Show/hide alert window and set tray icon
         if suspicious:
+            # Update current suspicious processes list
+            self.current_suspicious_processes = suspicious
+            
             # Check if we have new PIDs to alert about
             new_pids = new_alerted_pids - self.last_alerted_pids
             if new_pids:
@@ -1431,9 +1360,17 @@ class ProcessMonitorApp(QMainWindow):
                 
                 # Pulse alert window
                 QTimer.singleShot(1000, self.pulse_alert)
+            
+            # Start periodic status updates if not already running
+            self.start_periodic_status_updates()
         else:
+            # No suspicious processes detected
+            self.current_suspicious_processes = []
             self.hide_alert_window()
             self.set_tray_warning(False)
+            
+            # Stop periodic status updates
+            self.stop_periodic_status_updates()
         
         # Update display
         if suspicious:
@@ -1487,6 +1424,12 @@ class ProcessMonitorApp(QMainWindow):
                 print("Stopping chat monitoring thread...")
                 self.stop_chat_monitoring()
                 print("Chat monitoring thread stopped")
+            
+            # Stop periodic status updates
+            if hasattr(self, 'status_update_timer') and self.status_update_timer and self.status_update_timer.isActive():
+                print("Stopping periodic status updates...")
+                self.stop_periodic_status_updates()
+                print("Periodic status updates stopped")
             
             # Leave the Zoom meeting if bot is joined
             if hasattr(self, 'bot_joiner') and self.bot_joiner and self.bot_joiner.is_joined:
@@ -1586,6 +1529,66 @@ class ProcessMonitorApp(QMainWindow):
                 self.log_message("Chat monitoring stopped")
         except Exception as e:
             self.log_message(f"Error stopping chat monitoring: {e}")
+
+    def start_periodic_status_updates(self):
+        """Start periodic status updates when suspicious processes are detected"""
+        try:
+            if self.status_update_timer is None or not self.status_update_timer.isActive():
+                self.status_update_timer = QTimer(self)
+                self.status_update_timer.timeout.connect(self.send_periodic_status_update)
+                self.status_update_timer.start(self.status_update_interval * 1000)  # Convert to milliseconds
+                self.log_message(f"Started periodic status updates (every {self.status_update_interval} seconds)")
+        except Exception as e:
+            self.log_message(f"Error starting periodic status updates: {e}")
+
+    def stop_periodic_status_updates(self):
+        """Stop periodic status updates"""
+        try:
+            if self.status_update_timer and self.status_update_timer.isActive():
+                self.status_update_timer.stop()
+                self.log_message("Stopped periodic status updates")
+        except Exception as e:
+            self.log_message(f"Error stopping periodic status updates: {e}")
+
+    def send_periodic_status_update(self):
+        """Send periodic status update to chat when suspicious processes are detected"""
+        try:
+            if not self.auto_meeting_active or not self.chat_opened:
+                return
+                
+            if not self.current_suspicious_processes:
+                return
+                
+            # Check cooldown to avoid spam (use shorter cooldown for periodic updates)
+            current_time = time.time()
+            if current_time - self.last_status_update_time < self.status_update_interval:
+                return
+                
+            # Create status update message
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            process_count = len(self.current_suspicious_processes)
+            
+            # Clean the process info for chat
+            clean_processes = []
+            for process_info in self.current_suspicious_processes:
+                clean_info = self.clean_process_info_for_chat(process_info)
+                clean_processes.append(clean_info)
+            
+            status_message = (
+                f"STATUS UPDATE [{timestamp}]: {process_count} suspicious process(es) currently running\n"
+                f"{', '.join(clean_processes)}\n\n"
+                "Truely monitoring system is actively tracking these processes."
+            )
+            
+            # Send message
+            success = self.bot_joiner.send_message_to_chat(status_message)
+            if success:
+                self.last_status_update_time = current_time
+                self.log_message(f"Periodic status update sent: {process_count} suspicious process(es)")
+            else:
+                self.log_message("Failed to send periodic status update to chat.")
+        except Exception as e:
+            self.log_message(f"Error sending periodic status update: {e}")
 
     def clean_process_info_for_chat(self, process_info: str) -> str:
         """Strip HTML tags and create clean text for chat alerts"""
