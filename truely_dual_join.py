@@ -26,12 +26,13 @@ import threading
 
 # Import config
 try:
-    from config import ZOOM_URL, APPS, KEY
+    from config import ZOOM_URL, APPS, START_KEY, END_KEY
 except ImportError:
     print("Warning: config.py not found. Using default values.")
     ZOOM_URL = ""
     APPS = ["cluely", "claude"]
-    KEY = ""
+    START_KEY = ""
+    END_KEY = ""
 
 # Auto-install Selenium if not available
 def install_selenium_if_needed():
@@ -166,6 +167,7 @@ class BotMeetingJoiner:
 
             chrome_options = Options()
             chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--headless=new")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--disable-blink-features=AutomationControlled")
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -313,7 +315,7 @@ class BotMeetingJoiner:
                 print("The meeting might still join automatically or require manual intervention")
 
             # 6. Reduced wait time to check if we successfully joined
-            time.sleep(1.5)  # Reduced from 3 to 1.5
+            time.sleep(1.0)  # Reduced from 1.5 to 1.0
             
             # Check if we're in the meeting by looking for meeting controls
             try:
@@ -458,7 +460,7 @@ class BotMeetingJoiner:
                     
                     if success:
                         print("Chat panel opened successfully")
-                        time.sleep(1)  # Wait for chat panel to fully open
+                        time.sleep(0.5)  # Reduced from 1 to 0.5 - Wait for chat panel to fully open
                         return True
                     else:
                         print("All clicking strategies failed")
@@ -595,7 +597,7 @@ class BotMeetingJoiner:
         """Send a goodbye message before leaving the meeting"""
         try:
             if self.driver and self.is_joined:
-                goodbye_message = "Goodbye everyone! Truely signing off."
+                goodbye_message = f"Goodbye everyone! Truely signing off. {END_KEY}"
                 success = self.send_message_to_chat(goodbye_message)
                 if success:
                     print("Sent goodbye message")
@@ -768,11 +770,247 @@ class BotSendMessageThread(QThread):
         try:
             success = self.bot_joiner.send_message_to_chat(self.message)
             if success:
-                self.result_ready.emit(True, f"Message sent successfully: {self.message}")
+                self.result_ready.emit(True, f"Message sent: {self.message}")
             else:
                 self.result_ready.emit(False, "Failed to send message")
         except Exception as e:
             self.result_ready.emit(False, f"Error sending message: {str(e)}")
+
+class ChatMonitorThread(QThread):
+    """Thread for monitoring incoming chat messages for shutdown command"""
+    shutdown_requested = pyqtSignal()
+    
+    def __init__(self, bot_joiner):
+        super().__init__()
+        self.bot_joiner = bot_joiner
+        self._running = True
+        self.last_checked_messages = set()  # Track messages we've already checked
+        self.monitoring_start_time = None  # Track when monitoring should start
+        self.shutdown_info_sent = False  # Track if shutdown info has been sent
+    
+    def set_monitoring_start_time(self):
+        """Set the time when monitoring should start (after shutdown info is sent)"""
+        self.monitoring_start_time = time.time()
+        print(f"Chat monitoring will start checking messages after: {self.monitoring_start_time}")
+    
+    def run(self):
+        """Monitor chat messages for 'Truely End' command"""
+        while self._running:
+            try:
+                if self.bot_joiner and self.bot_joiner.driver and self.bot_joiner.is_joined:
+                    # Only check for messages if monitoring has started
+                    if self.monitoring_start_time is not None:
+                        # Check for new messages in chat
+                        if self.check_for_shutdown_command():
+                            print("Chat shutdown command detected: 'Truely End'")
+                            self.shutdown_requested.emit()
+                            break
+                
+                # Sleep for 3 seconds before next check (reduced from 5)
+                time.sleep(3)
+            except Exception as e:
+                print(f"Error in chat monitoring: {e}")
+                time.sleep(3)
+    
+    def check_for_shutdown_command(self):
+        """Check if 'Truely End' command has been sent in chat"""
+        try:
+            if not self.bot_joiner.driver:
+                return False
+            
+            # Debug: Print current page source to help understand Zoom's structure
+            if not hasattr(self, '_debug_printed'):
+                print("=== DEBUG: Checking Zoom chat structure ===")
+                try:
+                    # Look for any text containing "Truely" to see what's available
+                    all_elements = self.bot_joiner.driver.find_elements(By.XPATH, "//*[contains(text(), 'Truely')]")
+                    print(f"Found {len(all_elements)} elements containing 'Truely'")
+                    for i, elem in enumerate(all_elements[:5]):  # Show first 5
+                        print(f"  Element {i}: '{elem.text.strip()}' (tag: {elem.tag_name}, class: {elem.get_attribute('class')})")
+                except Exception as e:
+                    print(f"Debug failed: {e}")
+                self._debug_printed = True
+            
+            # Strategy 1: Use JavaScript to find all text nodes containing "Truely End"
+            try:
+                js_script = """
+                function findTruelyEndMessages() {
+                    const walker = document.createTreeWalker(
+                        document.body,
+                        NodeFilter.SHOW_TEXT,
+                        null,
+                        false
+                    );
+                    
+                    const messages = [];
+                    let node;
+                    while (node = walker.nextNode()) {
+                        const text = node.textContent.trim();
+                        if (text.includes('Truely End')) {
+                            const parent = node.parentElement;
+                            messages.push({
+                                text: text,
+                                tagName: parent.tagName,
+                                className: parent.className,
+                                id: parent.id,
+                                innerHTML: parent.innerHTML.substring(0, 200)
+                            });
+                        }
+                    }
+                    return messages;
+                }
+                return findTruelyEndMessages();
+                """
+                
+                messages = self.bot_joiner.driver.execute_script(js_script)
+                print(f"JavaScript found {len(messages)} elements containing 'Truely End'")
+                
+                for i, msg in enumerate(messages):
+                    print(f"  JS Message {i}: '{msg['text']}' (tag: {msg['tagName']}, class: {msg['className']})")
+                    
+                    if "Truely End" in msg['text']:
+                        # Create a unique hash for this message
+                        message_hash = f"{msg['text']}_{msg['tagName']}_{msg['className']}_{time.time()}"
+                        if message_hash not in self.last_checked_messages:
+                            self.last_checked_messages.add(message_hash)
+                            
+                            # Check if this looks like a user message (not our bot)
+                            if not self.is_our_message_js(msg):
+                                print(f"Found shutdown command via JavaScript: '{msg['text']}'")
+                                return True
+                            else:
+                                print(f"Ignoring our own message via JavaScript: '{msg['text']}'")
+                
+            except Exception as e:
+                print(f"JavaScript strategy failed: {e}")
+            
+            # Strategy 2: Look for recent messages in chat container
+            try:
+                # Find the chat container first
+                chat_containers = [
+                    "//div[contains(@class, 'chat-container')]",
+                    "//div[contains(@class, 'chat-panel')]",
+                    "//div[contains(@class, 'chat')]",
+                    "//div[contains(@id, 'chat')]"
+                ]
+                
+                chat_container = None
+                for container_selector in chat_containers:
+                    try:
+                        containers = self.bot_joiner.driver.find_elements(By.XPATH, container_selector)
+                        if containers:
+                            chat_container = containers[0]
+                            print(f"Found chat container: {container_selector}")
+                            break
+                    except:
+                        continue
+                
+                if chat_container:
+                    # Look for recent messages within the chat container
+                    recent_messages = chat_container.find_elements(By.XPATH, ".//div[contains(@class, 'message') or contains(@class, 'chat-item')]")
+                    print(f"Found {len(recent_messages)} recent messages in chat container")
+                    
+                    for message in recent_messages[-5:]:  # Check last 5 messages
+                        try:
+                            message_text = message.text.strip()
+                            print(f"  Recent message: '{message_text}'")
+                            
+                            if "Truely End" in message_text:
+                                # Check if this is a new message we haven't seen before
+                                message_hash = f"{message.get_attribute('data-message-id') or message_text}_{time.time()}"
+                                if message_hash not in self.last_checked_messages:
+                                    self.last_checked_messages.add(message_hash)
+                                    
+                                    # Additional check: make sure this isn't our own message
+                                    if not self.is_our_message(message):
+                                        print(f"Found shutdown command in recent message: '{message_text}'")
+                                        return True
+                                    else:
+                                        print(f"Ignoring our own message: '{message_text}'")
+                        except Exception as e:
+                            print(f"Error checking recent message: {e}")
+                            continue
+                
+            except Exception as e:
+                print(f"Strategy 2 failed: {e}")
+            
+            # Strategy 3: Fallback to broader selectors
+            chat_selectors = [
+                # More specific Zoom chat selectors
+                "//div[contains(@class, 'chat-message')]//div[contains(text(), 'Truely End')]",
+                "//div[contains(@class, 'message-content')]//div[contains(text(), 'Truely End')]",
+                "//div[contains(@class, 'chat-item')]//div[contains(text(), 'Truely End')]",
+                "//div[contains(@class, 'message')]//div[contains(text(), 'Truely End')]",
+                "//div[contains(@class, 'chat')]//div[contains(text(), 'Truely End')]",
+                # Broader selectors for different Zoom versions
+                "//div[contains(text(), 'Truely End')]",
+                "//span[contains(text(), 'Truely End')]",
+                "//p[contains(text(), 'Truely End')]",
+                # Look for any element containing the text
+                "//*[contains(text(), 'Truely End')]"
+            ]
+            
+            for selector in chat_selectors:
+                try:
+                    elements = self.bot_joiner.driver.find_elements(By.XPATH, selector)
+                    print(f"Selector '{selector}' found {len(elements)} elements")
+                    
+                    for element in elements:
+                        message_text = element.text.strip()
+                        print(f"  Checking element: '{message_text}'")
+                        
+                        if "Truely End" in message_text:
+                            # Check if this is a new message we haven't seen before
+                            message_hash = f"{element.get_attribute('data-message-id') or element.text}_{time.time()}"
+                            if message_hash not in self.last_checked_messages:
+                                self.last_checked_messages.add(message_hash)
+                                # Keep only last 100 messages to prevent memory bloat
+                                if len(self.last_checked_messages) > 100:
+                                    self.last_checked_messages.clear()
+                                
+                                # Additional check: make sure this isn't our own message
+                                if not self.is_our_message(element):
+                                    print(f"Found shutdown command in message: '{message_text}'")
+                                    return True
+                                else:
+                                    print(f"Ignoring our own message: '{message_text}'")
+                except Exception as e:
+                    print(f"Selector {selector} failed: {e}")
+                    continue
+            
+            return False
+            
+        except Exception as e:
+            print(f"Error checking for shutdown command: {e}")
+            return False
+    
+    def is_our_message(self, element):
+        """Check if the message is the shutdown info message (not a user command)"""
+        try:
+            message_text = element.text.strip()
+            shutdown_info = "To stop monitoring remotely, send 'Truely End' in the chat."
+            if message_text == shutdown_info:
+                return True
+            return False
+        except Exception as e:
+            print(f"Error checking if message is ours: {e}")
+            return False
+    
+    def is_our_message_js(self, message_data):
+        """Check if the message is the shutdown info message (not a user command)"""
+        try:
+            text = message_data['text'].strip()
+            shutdown_info = "To stop monitoring remotely, send 'Truely End' in the chat."
+            if text == shutdown_info:
+                return True
+            return False
+        except Exception as e:
+            print(f"Error checking if JS message is ours: {e}")
+            return False
+    
+    def stop(self):
+        """Stop the monitoring thread"""
+        self._running = False
 
 class ProcessMonitorApp(QMainWindow):
     def __init__(self):
@@ -795,6 +1033,9 @@ class ProcessMonitorApp(QMainWindow):
         self.last_cluely_alert_time = 0
         self.alert_cooldown = 30  # seconds between alerts
         
+        # Chat monitoring for shutdown command
+        self.chat_monitor_thread = None
+        
         self.init_ui()
         self.init_tray_icon()
         self.init_alert_window()
@@ -804,10 +1045,10 @@ class ProcessMonitorApp(QMainWindow):
         self.check_processes()
         
         # Update initial automated status
-        QTimer.singleShot(500, self.update_automated_status)
+        QTimer.singleShot(200, self.update_automated_status)  # Reduced from 500
         
         # Start automated meeting setup
-        QTimer.singleShot(1000, self.start_automated_meeting)
+        QTimer.singleShot(300, self.start_automated_meeting)  # Reduced from 1000
 
     def start_automated_meeting(self):
         """Start the automated meeting process using Zoom URL from config"""
@@ -871,7 +1112,7 @@ class ProcessMonitorApp(QMainWindow):
                     self.log_message("Failed to open Zoom app for user.")
                 
                 # Wait a bit for meeting to load, then open chat
-                QTimer.singleShot(2000, self.open_automated_chat)
+                QTimer.singleShot(500, self.open_automated_chat)
                 return True
             else:
                 self.log_message("Failed to join meeting as bot.")
@@ -895,13 +1136,40 @@ class ProcessMonitorApp(QMainWindow):
                 self.log_message("Chat panel opened successfully!")
                 self.log_message("Automated monitoring active - will send alerts when cluely is detected.")
                 
+                # Start chat monitoring for shutdown command
+                self.start_chat_monitoring()
+                
                 # Send introduction message
-                QTimer.singleShot(1000, self.send_introduction_message)
+                QTimer.singleShot(500, self.send_introduction_message)
             else:
                 self.log_message("Failed to open chat panel.")
                 
         except Exception as e:
             self.log_message(f"Error opening automated chat: {e}")
+
+    def start_chat_monitoring(self):
+        """Start monitoring chat messages for shutdown command"""
+        try:
+            if self.chat_monitor_thread is None or not self.chat_monitor_thread.isRunning():
+                self.chat_monitor_thread = ChatMonitorThread(self.bot_joiner)
+                self.chat_monitor_thread.shutdown_requested.connect(self.shutdown_from_chat)
+                self.chat_monitor_thread.start()
+                self.chat_monitor_thread.set_monitoring_start_time()
+                self.log_message("Chat monitoring started - listening for 'Truely End' command")
+        except Exception as e:
+            self.log_message(f"Error starting chat monitoring: {e}")
+
+    def shutdown_from_chat(self):
+        """Handle shutdown request from chat monitoring"""
+        try:
+            print("Shutdown requested from chat - sending SIGINT...")
+            self.log_message("Shutdown command 'Truely End' detected in chat - initiating graceful shutdown")
+            # Send SIGINT to the current process to trigger graceful shutdown
+            os.kill(os.getpid(), signal.SIGINT)
+        except Exception as e:
+            print(f"Error sending SIGINT from chat: {e}")
+            # Fallback: call graceful shutdown directly
+            self.graceful_shutdown()
 
     def send_introduction_message(self):
         """Send an introduction message when the bot joins the meeting"""
@@ -912,112 +1180,35 @@ class ProcessMonitorApp(QMainWindow):
             if hasattr(self, '_intro_message_sent') and self._intro_message_sent:
                 return
             self._intro_message_sent = True
-            # Send the exact message requested
-            intro_message = "Hello everyone! I'm Truely, your automated meeting monitor."
-            self.intro_message_thread = BotSendMessageThread(self.bot_joiner, intro_message)
-            self.intro_message_thread.result_ready.connect(self.on_intro_message_result)
-            self.intro_message_thread.start()
+            
+            # Send all messages quickly in sequence
+            messages = [
+                "Hello everyone! I'm Truely, your automated meeting monitor.",
+                f"Monitoring Key: {START_KEY}",
+                f"I'll be keeping an eye on the following applications: {', '.join(APPS)}",
+                "To stop monitoring remotely, send 'Truely End' in the chat."
+            ]
+            
+            # Send messages with minimal delays
+            for i, message in enumerate(messages):
+                QTimer.singleShot(i * 300, lambda msg=message: self.send_single_message(msg))  # 300ms between messages
+            
+            # Start chat monitoring after all messages are sent
+            QTimer.singleShot(len(messages) * 300 + 500, self.start_chat_monitoring)
+            
         except Exception as e:
             self.log_message(f"Error sending introduction message: {e}")
 
-    def on_intro_message_result(self, success: bool, message: str):
-        """Handle introduction message send result and send follow-up messages"""
-        if success:
-            self.log_message("Introduction message sent successfully!")
-            # Send Monitoring Key message next
-            monitoring_key_msg = f"Monitoring Key: {KEY}"
-            self.monitoring_key_thread = BotSendMessageThread(self.bot_joiner, monitoring_key_msg)
-            self.monitoring_key_thread.result_ready.connect(self.on_monitoring_key_result)
-            self.monitoring_key_thread.start()
-        else:
-            self.log_message("Failed to send introduction message.")
-
-    def on_monitoring_key_result(self, success: bool, message: str):
-        if success:
-            self.log_message("Monitoring key message sent successfully!")
-            # Send process list message next, all on one line
-            process_list = ', '.join(name for name in APPS)
-            process_msg = (
-                f"I'll be keeping an eye on the following applications and processes during this meeting: {process_list}"
-            )
-            self.process_list_thread = BotSendMessageThread(self.bot_joiner, process_msg)
-            self.process_list_thread.result_ready.connect(self.on_process_list_result)
-            self.process_list_thread.start()
-        else:
-            self.log_message("Failed to send monitoring key message.")
-
-    def on_process_list_result(self, success: bool, message: str):
-        if success:
-            self.log_message("Process list message sent successfully!")
-        else:
-            self.log_message("Failed to send process list message.")
-
-    def clean_process_info_for_chat(self, process_info: str) -> str:
-        """Strip HTML tags and create clean text for chat alerts"""
-        import re
-        
-        # Remove HTML tags
-        clean_text = re.sub(r'<[^>]+>', '', process_info)
-        
-        # Clean up any remaining formatting
-        clean_text = clean_text.replace('&nbsp;', ' ')
-        clean_text = clean_text.replace('&amp;', '&')
-        clean_text = clean_text.replace('&lt;', '<')
-        clean_text = clean_text.replace('&gt;', '>')
-        
-        # Remove extra whitespace and normalize
-        clean_text = ' '.join(clean_text.split())
-        
-        # Extract the key information in a clean format
-        # Look for patterns like [NAME] cluely (PID: 49311)
-        name_match = re.search(r'\[NAME\]\s+(\w+)\s+\(PID:\s+(\d+)\)', clean_text)
-        path_match = re.search(r'\[PATH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
-        hash_match = re.search(r'\[HASH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
-        
-        if name_match:
-            return f"[NAME] {name_match.group(1)} (PID: {name_match.group(2)})"
-        elif path_match:
-            return f"[PATH] {path_match.group(1)} (PID: {path_match.group(2)})"
-        elif hash_match:
-            return f"[HASH] {hash_match.group(1)} (PID: {hash_match.group(2)})"
-        else:
-            # Fallback to cleaned text
-            return clean_text
-
-    def send_automated_alert(self, process_info: str):
-        """Send suspicious activity alert to the meeting chat"""
+    def send_single_message(self, message):
+        """Send a single message without waiting for completion"""
         try:
-            if not self.auto_meeting_active or not self.chat_opened:
-                return
-                
-            # Check cooldown to avoid spam
-            current_time = time.time()
-            if current_time - self.last_cluely_alert_time < self.alert_cooldown:
-                return
-                
-            # Clean the process info for chat (remove HTML tags)
-            clean_process_info = self.clean_process_info_for_chat(process_info)
-            
-            # Create alert message
-            timestamp = datetime.now().strftime("%H:%M:%S")
-            alert_message = (
-                f"ALERT: SUSPICIOUS ACTIVITY DETECTED [{timestamp}]\n"
-                f"{clean_process_info}\n\n"
-                "This process has been flagged as potentially suspicious by Truely monitoring system."
-            )
-            
-            # Debug: Print what we're about to send
-            print(f"DEBUG: Sending alert message: {alert_message}")
-            
-            # Send message
-            success = self.bot_joiner.send_message_to_chat(alert_message)
+            success = self.bot_joiner.send_message_to_chat(message)
             if success:
-                self.last_cluely_alert_time = current_time
-                self.log_message("Alert sent to meeting chat!")
+                self.log_message(f"Message sent: {message[:50]}...")
             else:
-                self.log_message("Failed to send alert to chat.")
+                self.log_message(f"Failed to send message: {message[:50]}...")
         except Exception as e:
-            self.log_message(f"Error sending automated alert: {e}")
+            self.log_message(f"Error sending message: {e}")
 
     def init_ui(self):
         central_widget = QWidget()
@@ -1073,6 +1264,12 @@ class ProcessMonitorApp(QMainWindow):
         self.check_btn.setStyleSheet("margin-top: 8px; padding: 6px 16px; font-size: 12px; font-weight: bold;")
         self.check_btn.clicked.connect(self.check_processes)
         layout.addWidget(self.check_btn, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        # Test chat monitoring button (for debugging)
+        self.test_chat_btn = QPushButton("Test Chat Monitoring")
+        self.test_chat_btn.setStyleSheet("margin-top: 4px; padding: 6px 16px; font-size: 12px; font-weight: bold; background: #FF6B35; color: white;")
+        self.test_chat_btn.clicked.connect(self.test_chat_monitoring)
+        layout.addWidget(self.test_chat_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def init_tray_icon(self):
         # Normal icon: circle with a capital T, Columbia blue background
@@ -1277,6 +1474,12 @@ class ProcessMonitorApp(QMainWindow):
                 self.worker.wait()
                 print("Worker thread stopped")
             
+            # Stop chat monitoring thread
+            if hasattr(self, 'chat_monitor_thread') and self.chat_monitor_thread and self.chat_monitor_thread.isRunning():
+                print("Stopping chat monitoring thread...")
+                self.stop_chat_monitoring()
+                print("Chat monitoring thread stopped")
+            
             # Leave the Zoom meeting if bot is joined
             if hasattr(self, 'bot_joiner') and self.bot_joiner and self.bot_joiner.is_joined:
                 print("Bot is joined to meeting, attempting to leave...")
@@ -1351,6 +1554,98 @@ class ProcessMonitorApp(QMainWindow):
             print(f"Error sending SIGINT from popup: {e}")
             # Fallback: call graceful shutdown directly
             self.graceful_shutdown()
+
+    def test_chat_monitoring(self):
+        """Test chat monitoring functionality"""
+        try:
+            if self.chat_monitor_thread and self.chat_monitor_thread.isRunning():
+                # Force start monitoring even if not set
+                self.chat_monitor_thread.set_monitoring_start_time()
+                self.log_message("Chat monitoring test started - checking for 'Truely End' command")
+            else:
+                self.start_chat_monitoring()
+                if self.chat_monitor_thread:
+                    self.chat_monitor_thread.set_monitoring_start_time()
+                self.log_message("Chat monitoring test started")
+        except Exception as e:
+            self.log_message(f"Error starting chat monitoring test: {e}")
+
+    def stop_chat_monitoring(self):
+        """Stop monitoring chat messages"""
+        try:
+            if self.chat_monitor_thread and self.chat_monitor_thread.isRunning():
+                self.chat_monitor_thread.stop()
+                self.chat_monitor_thread.wait()
+                self.log_message("Chat monitoring stopped")
+        except Exception as e:
+            self.log_message(f"Error stopping chat monitoring: {e}")
+
+    def clean_process_info_for_chat(self, process_info: str) -> str:
+        """Strip HTML tags and create clean text for chat alerts"""
+        import re
+        
+        # Remove HTML tags
+        clean_text = re.sub(r'<[^>]+>', '', process_info)
+        
+        # Clean up any remaining formatting
+        clean_text = clean_text.replace('&nbsp;', ' ')
+        clean_text = clean_text.replace('&amp;', '&')
+        clean_text = clean_text.replace('&lt;', '<')
+        clean_text = clean_text.replace('&gt;', '>')
+        
+        # Remove extra whitespace and normalize
+        clean_text = ' '.join(clean_text.split())
+        
+        # Extract the key information in a clean format
+        # Look for patterns like [NAME] cluely (PID: 49311)
+        name_match = re.search(r'\[NAME\]\s+(\w+)\s+\(PID:\s+(\d+)\)', clean_text)
+        path_match = re.search(r'\[PATH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
+        hash_match = re.search(r'\[HASH\]\s+(.+?)\s+\(PID:\s+(\d+)\)', clean_text)
+        
+        if name_match:
+            return f"[NAME] {name_match.group(1)} (PID: {name_match.group(2)})"
+        elif path_match:
+            return f"[PATH] {path_match.group(1)} (PID: {path_match.group(2)})"
+        elif hash_match:
+            return f"[HASH] {hash_match.group(1)} (PID: {hash_match.group(2)})"
+        else:
+            # Fallback to cleaned text
+            return clean_text
+
+    def send_automated_alert(self, process_info: str):
+        """Send suspicious activity alert to the meeting chat"""
+        try:
+            if not self.auto_meeting_active or not self.chat_opened:
+                return
+                
+            # Check cooldown to avoid spam
+            current_time = time.time()
+            if current_time - self.last_cluely_alert_time < self.alert_cooldown:
+                return
+                
+            # Clean the process info for chat (remove HTML tags)
+            clean_process_info = self.clean_process_info_for_chat(process_info)
+            
+            # Create alert message
+            timestamp = datetime.now().strftime("%H:%M:%S")
+            alert_message = (
+                f"ALERT: SUSPICIOUS ACTIVITY DETECTED [{timestamp}]\n"
+                f"{clean_process_info}\n\n"
+                "This process has been flagged as potentially suspicious by Truely monitoring system."
+            )
+            
+            # Debug: Print what we're about to send
+            print(f"DEBUG: Sending alert message: {alert_message}")
+            
+            # Send message
+            success = self.bot_joiner.send_message_to_chat(alert_message)
+            if success:
+                self.last_cluely_alert_time = current_time
+                self.log_message("Alert sent to meeting chat!")
+            else:
+                self.log_message("Failed to send alert to chat.")
+        except Exception as e:
+            self.log_message(f"Error sending automated alert: {e}")
 
 def main():
     # Global reference to the window for cleanup
