@@ -4,8 +4,95 @@ Truely - Dual-Join Process Monitor
 A streamlined version focused on automatic dual-join functionality at startup
 """
 
-import sys
+# Disable Qt location services BEFORE any PyQt6 imports
 import os
+import sys
+
+# Set environment variables to disable location services
+os.environ['QT_DISABLE_LOCATION'] = '1'
+os.environ['QT_DISABLE_POSITIONING'] = '1'
+os.environ['QT_DISABLE_LOCATION_SERVICES'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_REQUEST'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_STATUS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_TYPE'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_SCOPE'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_ACCURACY'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_WHEN_IN_USE'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_ALWAYS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_NEVER'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_DENIED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_GRANTED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_RESTRICTED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_PROVISIONAL'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_EPHEMERAL'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_UNSPECIFIED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_UNKNOWN'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_NOT_DETERMINED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_ALWAYS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_WHEN_IN_USE'] = '1'
+
+# Also set some general Qt environment variables
+os.environ['QT_LOGGING_RULES'] = 'qt.qpa.*=false'
+os.environ['QT_ENABLE_GLYPH_CACHE_WORKAROUND'] = '1'
+os.environ['QT_MAC_WANTS_LAYER'] = '1'
+os.environ['QT_MAC_DISABLE_GLYPH_CACHE_FORCE_32BIT'] = '1'
+
+# Additional environment variables to disable accessibility and other services
+os.environ['QT_DISABLE_ACCESSIBILITY'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_REQUEST'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_STATUS'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_TYPE'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_SCOPE'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_ACCURACY'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_WHEN_IN_USE'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_ALWAYS'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_NEVER'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_DENIED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_GRANTED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_RESTRICTED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_PROVISIONAL'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_EPHEMERAL'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_UNSPECIFIED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_UNKNOWN'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_NOT_DETERMINED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED_ALWAYS'] = '1'
+os.environ['QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED_WHEN_IN_USE'] = '1'
+
+# Disable Qt plugins that might cause issues
+os.environ['QT_PLUGIN_PATH'] = ''
+os.environ['QT_QPA_PLATFORM'] = 'cocoa'
+os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = ''
+
+# Disable Qt location plugins specifically
+os.environ['QT_DISABLE_LOCATION_PLUGINS'] = '1'
+os.environ['QT_DISABLE_POSITIONING_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_SERVICES_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_REQUEST_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_STATUS_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_TYPE_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_SCOPE_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_ACCURACY_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_WHEN_IN_USE_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_ALWAYS_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_NEVER_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_DENIED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_GRANTED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_RESTRICTED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_PROVISIONAL_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_EPHEMERAL_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_UNSPECIFIED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_UNKNOWN_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_NOT_DETERMINED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_ALWAYS_PLUGINS'] = '1'
+os.environ['QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_WHEN_IN_USE_PLUGINS'] = '1'
+
+# Now import the rest
 import time
 import webbrowser
 import urllib.parse
@@ -20,23 +107,43 @@ from PyQt6.QtCore import Qt, QTimer, QRect, QThread, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QAction
 import psutil
 import hashlib
-import logging
 import signal
 import threading
 import platform
 
-# Import config
-try:
-    from config import ZOOM_URL, APPS, START_KEY, END_KEY, CHAT_MONITORING_ENABLED, STATUS_UPDATE_INTERVAL
-except ImportError:
-    print("Warning: config.py not found. Using default values.")
+import importlib.util
+
+def get_bundle_config_path():
+    # This works for both running from source and from inside the .app bundle
+    if getattr(sys, 'frozen', False):
+        # Running from a PyInstaller bundle
+        bundle_dir = os.path.dirname(sys.executable)
+        # Go up to Contents, then into Resources
+        resources_dir = os.path.abspath(os.path.join(bundle_dir, '..', 'Resources'))
+        return os.path.join(resources_dir, 'config.py')
+    else:
+        # Running from source, fallback to local config.py
+        return os.path.join(os.path.dirname(__file__), 'config.py')
+
+config_path = get_bundle_config_path()
+if os.path.exists(config_path):
+    spec = importlib.util.spec_from_file_location("user_config", config_path)
+    user_config = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(user_config)
+    ZOOM_URL = getattr(user_config, "ZOOM_URL", "")
+    APPS = getattr(user_config, "APPS", ["cluely", "claude"])
+    START_KEY = getattr(user_config, "START_KEY", "")
+    END_KEY = getattr(user_config, "END_KEY", "")
+    CHAT_MONITORING_ENABLED = getattr(user_config, "CHAT_MONITORING_ENABLED", True)
+    STATUS_UPDATE_INTERVAL = getattr(user_config, "STATUS_UPDATE_INTERVAL", 10)
+else:
+    print("Warning: config.py not found in bundle. Using default values.")
     ZOOM_URL = ""
     APPS = ["cluely", "claude"]
     START_KEY = ""
     END_KEY = ""
-    CHAT_MONITORING_ENABLED = True  # Default to enabled
-    STATUS_UPDATE_INTERVAL = 10  # Default to 10 seconds
-
+    CHAT_MONITORING_ENABLED = True
+    STATUS_UPDATE_INTERVAL = 10
 # Auto-install Selenium if not available
 def install_selenium_if_needed():
     """Automatically install Selenium and webdriver-manager if not available"""
@@ -72,13 +179,34 @@ except ImportError:
     SELENIUM_AVAILABLE = False
     print("Selenium not available. Bot features will be disabled.")
 
-# Setup logging
-logging.basicConfig(
-    filename='truely_dual_join.log',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s'
-)
+# Simple logging proxy - replaces all logging calls with print statements
+class LoggingProxy:
+    def info(self, message, *args):
+        if args:
+            print(f"[INFO] {message % args}")
+        else:
+            print(f"[INFO] {message}")
+    
+    def error(self, message, *args):
+        if args:
+            print(f"[ERROR] {message % args}")
+        else:
+            print(f"[ERROR] {message}")
+    
+    def warning(self, message, *args):
+        if args:
+            print(f"[WARNING] {message % args}")
+        else:
+            print(f"[WARNING] {message}")
+    
+    def debug(self, message, *args):
+        if args:
+            print(f"[DEBUG] {message % args}")
+        else:
+            print(f"[DEBUG] {message}")
 
+# Create a global logging object
+logging = LoggingProxy()
 class SuspiciousProcessWorker(QThread):
     result_ready = pyqtSignal(list, set)
     def __init__(self, get_process_names, suspicious_paths, suspicious_hashes):
