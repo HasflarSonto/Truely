@@ -179,7 +179,7 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name='Truely.app',
-    icon=None,  # You can add an icon file here if you have one
+    icon='Truely.icns',  # Use the Truely.icns icon file
     bundle_identifier='com.truely.app',
     info_plist={
         'CFBundleName': 'Truely',

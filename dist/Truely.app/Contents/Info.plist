@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Truely</string>
 	<key>CFBundleIconFile</key>
-	<string>icon-windowed.icns</string>
+	<string>Truely.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.truely.app</string>
 	<key>CFBundleInfoDictionaryVersion</key>

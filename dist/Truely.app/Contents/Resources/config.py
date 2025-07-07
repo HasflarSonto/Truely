@@ -1,4 +1,4 @@
-ZOOM_URL = "https://us05web.zoom.us/j/83260265728?pwd=FYQ4IzthRtzijSlpxJovtSJWFPWlf1.1"
+ZOOM_URL = "https://us05web.zoom.us/j/83777062834?pwd=5SUg72QEWDsWJAWolQ8MB6NHlqab6M.1"
 APPS = ["cluely", "claude"]
 START_KEY = "HIHIHI"
 END_KEY = "BYEBYE"

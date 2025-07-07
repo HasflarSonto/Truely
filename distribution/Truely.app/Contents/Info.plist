@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Truely</string>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
+	<key>CFBundleExecutable</key>
+	<string>Truely</string>
+	<key>CFBundleIconFile</key>
+	<string>Truely.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.truely.app</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Truely</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleURLTypes</key>
+	<array/>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>LSBackgroundOnly</key>
+	<false/>
+	<key>LSEnvironment</key>
+	<dict>
+		<key>QT_DISABLE_ACCESSIBILITY</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_ACCURACY</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_ALWAYS</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED_ALWAYS</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_AUTHORIZED_WHEN_IN_USE</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_DENIED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_EPHEMERAL</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_GRANTED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_NEVER</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_NOT_DETERMINED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_PROVISIONAL</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_REQUEST</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_RESTRICTED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_SCOPE</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_STATUS</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_TYPE</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_UNKNOWN</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_UNSPECIFIED</key>
+		<string>1</string>
+		<key>QT_DISABLE_ACCESSIBILITY_PERMISSION_WHEN_IN_USE</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_ACCURACY</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_ALWAYS</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_ALWAYS</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_AUTHORIZED_WHEN_IN_USE</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_DENIED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_EPHEMERAL</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_GRANTED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_NEVER</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_NOT_DETERMINED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_PROVISIONAL</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_REQUEST</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_RESTRICTED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_SCOPE</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_STATUS</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_TYPE</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_UNKNOWN</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_UNSPECIFIED</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_PERMISSION_WHEN_IN_USE</key>
+		<string>1</string>
+		<key>QT_DISABLE_LOCATION_SERVICES</key>
+		<string>1</string>
+		<key>QT_DISABLE_POSITIONING</key>
+		<string>1</string>
+		<key>QT_ENABLE_GLYPH_CACHE_WORKAROUND</key>
+		<string>1</string>
+		<key>QT_LOGGING_RULES</key>
+		<string>qt.qpa.*=false</string>
+		<key>QT_MAC_DISABLE_GLYPH_CACHE_FORCE_32BIT</key>
+		<string>1</string>
+		<key>QT_MAC_WANTS_LAYER</key>
+		<string>1</string>
+	</dict>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13.0</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>PurposeKey</key>
+		<string>This app does not use location services</string>
+	</dict>
+	<key>NSLocationUsageDescription</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionAPI</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionAgent</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionApp</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionBase</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionBundle</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionChannel</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionConnection</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionCore</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionDaemon</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionData</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionDictionary</key>
+	<dict>
+		<key>PurposeKey</key>
+		<string>This app does not use location services</string>
+	</dict>
+	<key>NSLocationUsageDescriptionDriver</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionEndpoint</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionExtension</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionFirmware</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionFoundation</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionFramework</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionHardware</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionInfo</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionInterface</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionJob</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionKey</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionKit</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionLibrary</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionMeta</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionNetwork</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionPipe</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionPlugin</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionPort</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionProcess</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionProtocol</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionSDK</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionService</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionSession</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionSocket</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionSoftware</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionStream</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionString</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionSystem</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionTask</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionText</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionThread</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionToolkit</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionUser</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationUsageDescriptionValue</key>
+	<string>This app does not use location services</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app does not use location services</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
+</dict>
+</plist>
