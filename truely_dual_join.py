@@ -103,7 +103,7 @@ from typing import List
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit, QTextEdit, QListWidget, QListWidgetItem, QInputDialog, QMessageBox, QSystemTrayIcon, QMenu, QTabWidget, QGroupBox, QGridLayout, QCheckBox, QFrame
 )
-from PyQt6.QtCore import Qt, QTimer, QRect, QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, QRect, QThread, pyqtSignal, QCoreApplication
 from PyQt6.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QAction
 import psutil
 import hashlib
@@ -298,7 +298,6 @@ class BotMeetingJoiner:
 
             chrome_options = Options()
             chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--headless=new")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--disable-blink-features=AutomationControlled")
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -527,7 +526,7 @@ class BotMeetingJoiner:
             self.switch_to_meeting_iframe()
             # Handle any overlay elements that might block clicks
             self.handle_overlay_elements()
-            wait = WebDriverWait(self.driver, 8)
+            wait = WebDriverWait(self.driver, 6)  # Reduced from 8 to 6 seconds
             
             # Find the chat button using the specific HTML structure provided
             try:
@@ -546,12 +545,12 @@ class BotMeetingJoiner:
                     
                     # Clear any existing focus and wait
                     self.driver.execute_script("document.activeElement.blur();")
-                    time.sleep(0.5)
+                    time.sleep(0.3)  # Reduced from 0.5 to 0.3
                     
                     self.scroll_element_into_view(chat_button)
                     
                     # Wait a moment before clicking to ensure everything is ready
-                    time.sleep(0.5)
+                    time.sleep(0.3)  # Reduced from 0.5 to 0.3
                     
                     # Try a more precise single-click approach
                     success = False
@@ -560,7 +559,7 @@ class BotMeetingJoiner:
                     try:
                         print("Trying focus + click strategy...")
                         chat_button.click()  # This should focus the element
-                        time.sleep(0.2)  # Brief pause
+                        time.sleep(0.1)  # Reduced from 0.2 to 0.1
                         chat_button.click()  # This should actually click it
                         print("Focus + click successful")
                         success = True
@@ -572,7 +571,7 @@ class BotMeetingJoiner:
                         try:
                             print("Trying JavaScript focus + click...")
                             self.driver.execute_script("arguments[0].focus();", chat_button)
-                            time.sleep(0.2)
+                            time.sleep(0.1)  # Reduced from 0.2 to 0.1
                             self.driver.execute_script("arguments[0].click();", chat_button)
                             print("JavaScript focus + click successful")
                             success = True
@@ -591,7 +590,7 @@ class BotMeetingJoiner:
                     
                     if success:
                         print("Chat panel opened successfully")
-                        time.sleep(0.5)  # Reduced from 1 to 0.5 - Wait for chat panel to fully open
+                        time.sleep(0.3)  # Reduced from 0.5 to 0.3 - Wait for chat panel to fully open
                         return True
                     else:
                         print("All clicking strategies failed")
@@ -645,13 +644,13 @@ class BotMeetingJoiner:
         # Then send the message
         return self.send_message_to_chat(message)
 
-    def wait_for_meeting_loaded(self, timeout=30):
+    def wait_for_meeting_loaded(self, timeout=10):  # Reduced from 30 to 10 seconds
         """Wait for the meeting to be fully loaded before proceeding"""
         try:
             wait = WebDriverWait(self.driver, timeout)
-            # Wait for common meeting elements to appear
+            # Wait for common meeting elements to appear - more specific selector for faster detection
             wait.until(EC.presence_of_element_located((
-                By.XPATH, "//button[contains(@aria-label, 'Share') or contains(@aria-label, 'Chat') or contains(@aria-label, 'Leave')]"
+                By.XPATH, "//button[contains(@aria-label, 'Chat') or contains(@aria-label, 'Share') or contains(@aria-label, 'Leave') or contains(@class, 'footer-button')]"
             )))
             print("Meeting fully loaded")
             return True
@@ -719,7 +718,7 @@ class BotMeetingJoiner:
         """Scroll element into view before clicking"""
         try:
             self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
-            time.sleep(0.5)  # Wait for scroll to complete
+            time.sleep(0.3)  # Reduced from 0.5 to 0.3 - Wait for scroll to complete
             print("Scrolled element into view")
         except Exception as e:
             print(f"Error scrolling element into view: {e}")
@@ -1145,7 +1144,7 @@ class ProcessMonitorApp(QMainWindow):
                     self.log_message("Failed to open Zoom app for user.")
                 
                 # Wait a bit for meeting to load, then open chat
-                QTimer.singleShot(500, self.open_automated_chat)
+                QTimer.singleShot(300, self.open_automated_chat)  # Reduced from 500 to 300 for faster startup
                 return True
             else:
                 self.log_message("Failed to join meeting as bot.")
@@ -1156,29 +1155,58 @@ class ProcessMonitorApp(QMainWindow):
             return False
 
     def open_automated_chat(self):
-        """Open chat panel for automated messaging"""
+        """Open chat panel for automated messaging with optimized timing"""
         try:
             if not self.auto_meeting_active:
                 return
-                
             self.log_message("Opening chat panel...")
-            success = self.bot_joiner.open_chat_panel()
-            if success:
-                self.chat_opened = True
-                self.update_automated_status()
-                self.log_message("Chat panel opened successfully!")
-                self.log_message("Automated monitoring active - will send alerts when cluely is detected.")
-                
-                # Start chat monitoring for shutdown command
-                self.start_chat_monitoring()
-                
-                # Send introduction message
-                QTimer.singleShot(500, self.send_introduction_message)
-            else:
-                self.log_message("Failed to open chat panel.")
-                
+            self.try_open_chat_optimized()
         except Exception as e:
             self.log_message(f"Error opening automated chat: {e}")
+
+    def try_open_chat_optimized(self):
+        """Optimized chat opening with proper meeting load detection"""
+        def attempt_open():
+            # First, wait for the meeting to be fully loaded
+            self.log_message("Waiting for meeting to fully load...")
+            if self.bot_joiner.wait_for_meeting_loaded(timeout=15):
+                self.log_message("Meeting loaded successfully, attempting to open chat...")
+                success = self.bot_joiner.open_chat_panel()
+                if success:
+                    self.chat_opened = True
+                    self.update_automated_status()
+                    self.log_message("Chat panel opened successfully!")
+                    self.log_message("Automated monitoring active - will send alerts when cluely is detected.")
+                    # Start chat monitoring for shutdown command
+                    self.start_chat_monitoring()
+                    # Send introduction message
+                    QTimer.singleShot(500, self.send_introduction_message)
+                else:
+                    # Single retry with a shorter delay if first attempt fails
+                    self.log_message("First attempt failed, retrying in 2 seconds...")
+                    QTimer.singleShot(2000, lambda: self.single_retry_open_chat())
+            else:
+                self.log_message("Meeting failed to load properly, retrying in 3 seconds...")
+                QTimer.singleShot(3000, attempt_open)
+        
+        # Start the process with a reasonable initial delay
+        QTimer.singleShot(2000, attempt_open)  # Reduced from 3000 to 2000
+
+    def single_retry_open_chat(self):
+        """Single retry attempt for opening chat"""
+        self.log_message("Retrying to open chat panel...")
+        success = self.bot_joiner.open_chat_panel()
+        if success:
+            self.chat_opened = True
+            self.update_automated_status()
+            self.log_message("Chat panel opened successfully on retry!")
+            self.log_message("Automated monitoring active - will send alerts when cluely is detected.")
+            # Start chat monitoring for shutdown command
+            self.start_chat_monitoring()
+            # Send introduction message
+            QTimer.singleShot(500, self.send_introduction_message)
+        else:
+            self.log_message("Failed to open chat panel after retry.")
 
     def start_chat_monitoring(self):
         """Start monitoring chat messages for shutdown command"""
@@ -1327,6 +1355,13 @@ class ProcessMonitorApp(QMainWindow):
         self.log_text.setReadOnly(True)
         self.log_text.setStyleSheet("background: #23272e; color: #e0e0e0; font-family: monospace; font-size: 12px; border-radius: 6px; padding: 8px; border: 1.5px solid #23272e;")
         layout.addWidget(self.log_text)
+
+
+        # --- Self-delete button ---
+        self_delete_btn = QPushButton("Delete This App")
+        self_delete_btn.setStyleSheet("background: #ff4444; color: white; font-weight: bold; border-radius: 8px; padding: 10px; margin-top: 18px;")
+        self_delete_btn.clicked.connect(self.self_delete)
+        layout.addWidget(self_delete_btn)
 
     def init_tray_icon(self):
         # Normal icon: circle with a capital T, Columbia blue background
@@ -1784,6 +1819,33 @@ class ProcessMonitorApp(QMainWindow):
                 self.log_message("Failed to send alert to chat.")
         except Exception as e:
             self.log_message(f"Error sending automated alert: {e}")
+
+    def self_delete(self):
+        import shutil
+        import subprocess
+        from pathlib import Path
+        reply = QMessageBox.question(
+            self,
+            "Confirm Delete",
+            "Are you sure you want to permanently delete this app from your computer?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+        # Get the executable path and walk up to the .app bundle
+        exe_path = Path(QCoreApplication.applicationDirPath())
+        for parent in exe_path.parents:
+            if parent.suffix == ".app":
+                app_path = str(parent)
+                break
+        else:
+            QMessageBox.critical(self, "Error", "Could not determine app bundle path.")
+            return
+        # Create a shell script to delete the app after quitting
+        script = f'(sleep 2; rm -rf "{app_path}") &'
+        subprocess.Popen(["/bin/sh", "-c", script])
+        QMessageBox.information(self, "Goodbye", "The app will now delete itself.")
+        QApplication.quit()
 
 def main():
     # Global reference to the window for cleanup
