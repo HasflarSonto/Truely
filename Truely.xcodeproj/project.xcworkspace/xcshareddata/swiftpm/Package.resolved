@@ -1,0 +1,24 @@
+{
+  "originHash" : "8cda704dbc80ca1e185ff74d9ca316e69469b8f1b37b8d65dd265209af4b3eb9",
+  "pins" : [
+    {
+      "identity" : "chglassmorphismview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Chaehui-Seo/CHGlassmorphismView.git",
+      "state" : {
+        "revision" : "b212c24b84a34b08b18a5e4639f5e0c41f11b310",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swifter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/httpswift/swifter",
+      "state" : {
+        "revision" : "9483a5d459b45c3ffd059f7b55f9638e268632fd",
+        "version" : "1.5.0"
+      }
+    }
+  ],
+  "version" : 3
+}
